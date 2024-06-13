@@ -9,9 +9,11 @@ public class Overlay : MonoBehaviour
     public GameObject overlayContainer;
 
     public static Overlay instance;
-    public List<Vector3Int> tiles; //contains all overlay tile positions (which only exist on very top of map)
-    public List<Vector2Int> tiles2D; //all overlay tile positions without z coordinate
+    public List<Vector3Int> tiles; //contains all overlay tile positions (in tilemap coords) which only exist on very top of map
+    public List<Vector2Int> tiles2D; //all overlay tile positions without z coordinate (in tilemap coords)
     private bool preTileExists;
+
+    public List<Vector3> tilesWorldPos;
 
     //I'm not sure what this does, I'll keep it in until it starts causing errors \_(-^-)_/
     private void Awake()
@@ -62,27 +64,23 @@ public class Overlay : MonoBehaviour
             string tileName = tileBase.name.ToString();
             Vector3 tileOfset = tileTypeIdentifier(tileName);
 
+            Vector3 tileWorldPos = cellPosition + tileOfset;
+            tilesWorldPos.Add(tileWorldPos);
+
             if (preTileExists == true)
             {
-                overlayTilePrefab.transform.position = cellPosition + tileOfset;
+                overlayTilePrefab.transform.position = tileWorldPos;
                 preTileExists = false;
             } 
             else 
             {
                 if (tileOfset != new Vector3(0,0,0))
                 {
-                    overlayRender(overlayTilePrefab, cellPosition, tileOfset);
+                    Instantiate(overlayTilePrefab, tileWorldPos, Quaternion.identity, overlayContainer.transform);
                 }
             }
         }
 
-    }
-
-    void overlayRender (GameObject overlayTilePrefab, Vector3 position, Vector3 transformation)
-    {
-        Vector3 worldTileLocation = new Vector3(position.x + transformation.x, position.y + transformation.y, position.z + transformation.z);
-        Instantiate(overlayTilePrefab, worldTileLocation, Quaternion.identity, overlayContainer.transform); //Quaternion is the rotation (I think)
-        Debug.Log("TileLocation: (" + worldTileLocation.x + ", " + worldTileLocation.y + ", " + worldTileLocation.z + ")");
     }
 
     private Vector3 tileTypeIdentifier(string _tileName)

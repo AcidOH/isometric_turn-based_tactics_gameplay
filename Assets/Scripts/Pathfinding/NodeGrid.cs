@@ -14,10 +14,14 @@ public class NodeGrid : MonoBehaviour
 
     float nodeDiameterX, nodeDiameterY;
     int gridSizeX, gridSizeY;
+	//Overlay overlay;
 
     void Start()
     {
-	    nodeDiameterX = nodeRadiusX*2;
+	    //overlay = GetComponent<Overlay>();
+		//List<Vector3> overlayGrid = overlay.tilesWorldPos;
+		
+		nodeDiameterX = nodeRadiusX*2;
         nodeDiameterY = nodeRadiusY*2;
     	gridSizeX =  Mathf.RoundToInt(gridWorldSize.x/nodeDiameterX);
     	gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameterY);

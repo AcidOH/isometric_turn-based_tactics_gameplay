@@ -16,7 +16,7 @@ public class Overlay : MonoBehaviour
     public List<Vector3> tilesWorldPos;
 
     //I'm not sure what this does, I'll keep it in until it starts causing errors \_(-^-)_/
-    private void Awake()
+    /*private void Awake()
     {
         if(instance != null && instance != this)
         {
@@ -26,11 +26,11 @@ public class Overlay : MonoBehaviour
         {
             instance = this;
             Debug.Log("instance was set to this");
-        } //I think this just prevents the script from running if its already being run/from generating tiles if the ties are already there
-    }
+        } //deletes overlay tiles if script is/has already been run
+    }*/
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {   
         if (overlayTilePrefab != null)
         {
@@ -38,7 +38,7 @@ public class Overlay : MonoBehaviour
         }
 
         //Tilemap tilemap = GetComponent<Tilemap>(); //Tilemap isn't a component of Grid, but rather a child, so causes errors
-        var tileMap = gameObject.GetComponentInChildren<Tilemap>(); //Acknowledges Grid parent, so works
+        var tileMap = gameObject.GetComponentInChildren<Tilemap>();
         tileMap.CompressBounds();
 
         Vector3Int origin = tileMap.origin;

@@ -11,12 +11,19 @@ public class Overlay : MonoBehaviour
     public static Overlay instance;
     public List<Vector3Int> tiles; //contains all overlay tile positions (in tilemap coords) which only exist on very top of map
     public List<Vector2Int> tiles2D; //all overlay tile positions without z coordinate (in tilemap coords)
+    public Dictionary<Vector3Int, Vector3> tilesGridandWorldPos;
     private bool preTileExists;
 
-    public List<Vector3> tilesWorldPos;
+    //NODEGRID:
+    //public Transform player;
+    public LayerMask unwalkableMask;
+    Node[,] grid;
+    //^these are set in the inspector
+    int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
-    //I'm not sure what this does, I'll keep it in until it starts causing errors \_(-^-)_/
-    /*private void Awake()
+
+    //I'm not certain what this does, I'll keep it in until it starts causing errors \_(-^-)_/
+    private void Awake()
     {
         if(instance != null && instance != this)
         {
@@ -27,10 +34,10 @@ public class Overlay : MonoBehaviour
             instance = this;
             Debug.Log("instance was set to this");
         } //deletes overlay tiles if script is/has already been run
-    }*/
+    }
     
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {   
         if (overlayTilePrefab != null)
         {
@@ -65,7 +72,7 @@ public class Overlay : MonoBehaviour
             Vector3 tileOfset = tileTypeIdentifier(tileName);
 
             Vector3 tileWorldPos = cellPosition + tileOfset;
-            tilesWorldPos.Add(tileWorldPos);
+            tilesGridandWorldPos.Add(location, tileWorldPos);
 
             if (preTileExists == true)
             {
@@ -102,9 +109,100 @@ public class Overlay : MonoBehaviour
         return _tileOfset;
     }
 
-    // Update is called once per frame
-    void Update()
+    //NODEGRID:
+    void CreateGrid()
     {
-        
+		foreach (var overlayTilePos in tilesGridandWorldPos)
+        {
+            bool walkable = true;
+			//bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
+			//^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
+			
+			grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
+		}
+    }
+
+    public List<Node> GetNeighbours(Node node)
+    {
+	    List<Node> neighbours = new List<Node>();
+	    for (int x = -1; x <= 1; x++)
+	    {
+		    for (int y = -1; y <= 1; y++)
+		    {
+			    if (x == 0 && y == 0)
+			    {
+				    continue;
+			    }
+			    
+                int checkX = node.gridX + x; //gridX and gridY are properties of Node class
+			    int checkY = node.gridY + y;
+			
+                if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
+                {
+                    neighbours.Add(grid[checkX,checkY]);
+                }
+		    }
+	    }
+	    return neighbours;
+    }
+
+    public Node NodeFromWorldPoint(Vector3 targetWorldPosition) //can get world point from raycast in from Cursor script
+    {
+		//THIS IS BORROWED FROM CURSOR SCRIPT! (You need to turn it into a function that you can reuse)
+        RaycastHit2D hit = Physics2D.Raycast(targetWorldPosition, Vector2.zero);
+
+        if (hit.collider != null)
+        {
+            GameObject hitOverlayTile = hit.collider.gameObject;
+            Vector3 hitOverlayTilePos = hit.transform.position;
+
+			foreach (var overlayTilePos in tilesGridandWorldPos)
+			{
+				if (hitOverlayTilePos == overlayTilePos.Value)
+				{
+					Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
+				}
+			}
+			
+			//int index = overlayWorldGrid.IndexOf(hitOverlayTilePos); //returns -1
+			//Debug.Log("Index of hitOverlayTilePos in overlayWorldGrid: " + index);
+		
+			/*int x = overlayGrid[index].x;
+			int y = overlayGrid[index].y;
+	
+        	return grid[x,y];*/
+        }
+
+		return null;
+    }
+
+    public List<Node> path;
+
+    void OnDrawGizmos()
+    {
+	    if (grid != null)
+        {
+            //Node playerNode = NodeFromWorldPoint(player.position);
+		
+            foreach (Node n in grid)
+		    {
+			    Gizmos.color = (n.walkable)?Color.white:Color.red;
+			
+                if (path != null)
+			    {
+				    if (path.Contains(n))
+				    {
+					    Gizmos.color = Color.black;
+				    }
+			    }
+			
+                /*if (playerNode == n) 
+			    {
+				    Gizmos.color = Color.cyan;
+			    }*/
+
+			    Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
+		    }
+        }
     }
 }

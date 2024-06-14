@@ -6,11 +6,11 @@ public class Pathfinding : MonoBehaviour
 {
     public Transform seeker, target;
 
-    NodeGrid grid;
+    Overlay grid;
 
     void Awake()
     {
-	    grid = GetComponent<NodeGrid>();
+	    grid = GetComponent<Overlay>();
     }
 
     void Update()

@@ -39,6 +39,9 @@ public class Overlay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
+        //why do you need to instantiate dictionaries but not lists?
+        tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
+
         if (overlayTilePrefab != null)
         {
             preTileExists = true;
@@ -148,11 +151,16 @@ public class Overlay : MonoBehaviour
 
     public Node NodeFromWorldPoint(Vector3 targetWorldPosition) //can get world point from raycast in from Cursor script
     {
-		//THIS IS BORROWED FROM CURSOR SCRIPT! (You need to turn it into a function that you can reuse)
+		Debug.Log("NodeFromWorldPoint was called");
+        
+        //THIS IS BORROWED FROM CURSOR SCRIPT! (You need to turn it into a function that you can reuse)
         RaycastHit2D hit = Physics2D.Raycast(targetWorldPosition, Vector2.zero);
+
+        Debug.Log("Raycast hit: " + hit);
 
         if (hit.collider != null)
         {
+            Debug.Log("hit.collider != null");
             GameObject hitOverlayTile = hit.collider.gameObject;
             Vector3 hitOverlayTilePos = hit.transform.position;
 
@@ -161,6 +169,10 @@ public class Overlay : MonoBehaviour
 				if (hitOverlayTilePos == overlayTilePos.Value)
 				{
 					Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
+                    int x = overlayTilePos.Key.x;
+			        int y = overlayTilePos.Key.y;
+	
+            	    return grid[x,y];
 				}
 			}
 			
@@ -173,6 +185,7 @@ public class Overlay : MonoBehaviour
         	return grid[x,y];*/
         }
 
+        Debug.Log("hit.collider = null");
 		return null;
     }
 

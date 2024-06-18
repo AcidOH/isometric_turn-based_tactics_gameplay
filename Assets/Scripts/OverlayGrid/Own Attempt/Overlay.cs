@@ -18,11 +18,11 @@ public class Overlay : MonoBehaviour
     //public Transform player;
     public LayerMask unwalkableMask;
     Node[,] grid;
-    //^these are set in the inspector
-    int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
+    public int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
 
     //I'm not certain what this does, I'll keep it in until it starts causing errors \_(-^-)_/
+    //this deletes Grid and Tilemap when not attached to Grid...
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -75,7 +75,7 @@ public class Overlay : MonoBehaviour
             Vector3 tileOfset = tileTypeIdentifier(tileName);
 
             Vector3 tileWorldPos = cellPosition + tileOfset;
-            tilesGridandWorldPos.Add(location, tileWorldPos);
+            tilesGridandWorldPos.Add(location - origin, tileWorldPos); //subtracting origin should make it so that the grid is onlt positive values, with bottom left being (0,0)
 
             if (preTileExists == true)
             {
@@ -90,6 +90,9 @@ public class Overlay : MonoBehaviour
                 }
             }
         }
+
+        CreateGrid();
+        Debug.Log("Grid: " + grid);
 
     }
 
@@ -115,13 +118,20 @@ public class Overlay : MonoBehaviour
     //NODEGRID:
     void CreateGrid()
     {
-		foreach (var overlayTilePos in tilesGridandWorldPos)
+        Debug.Log("Entered CreateGrid()");
+		
+        grid = new Node[gridSizeX, gridSizeY];
+        
+        foreach (var overlayTilePos in tilesGridandWorldPos)
         {
             bool walkable = true;
 			//bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
 			//^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
 			
-			grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
+            Debug.Log("Entered foreach in CreateGrid, bool walkable was set");
+            Debug.Log("overlayTilePos.Key = " + overlayTilePos.Key + ", overlayTilePos.Value = " + overlayTilePos.Value);
+			
+            grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
 		}
     }
 
@@ -171,8 +181,10 @@ public class Overlay : MonoBehaviour
 					Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
                     int x = overlayTilePos.Key.x;
 			        int y = overlayTilePos.Key.y;
-	
-            	    return grid[x,y];
+
+                    Debug.Log("int x and int y were set. " + x + ", " + y);
+
+                    return grid[x,y];
 				}
 			}
 			
@@ -193,13 +205,18 @@ public class Overlay : MonoBehaviour
 
     void OnDrawGizmos()
     {
-	    if (grid != null)
+	    Gizmos.DrawWireCube(transform.position, new Vector3(gridSizeX, gridSizeY, 1));
+        //^ you've mixed up gridSize and gridWorldSize (not really significant rn, but something to note)
+        
+        if (grid != null)
         {
             //Node playerNode = NodeFromWorldPoint(player.position);
 		
             foreach (Node n in grid)
 		    {
-			    Gizmos.color = (n.walkable)?Color.white:Color.red;
+			    Debug.Log("Node n in grid: " + n);
+
+                Gizmos.color = (n.walkable)?Color.white:Color.red;
 			
                 if (path != null)
 			    {

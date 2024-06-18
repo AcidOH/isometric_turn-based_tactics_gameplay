@@ -3410,6 +3410,7 @@ GameObject:
   - component: {fileID: 306817041}
   - component: {fileID: 306817040}
   - component: {fileID: 306817042}
+  - component: {fileID: 306817043}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -3464,6 +3465,22 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 0
+  gridSizeX: 20
+  gridSizeY: 20
+--- !u!114 &306817043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306817039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4785fd3ddd453a744a007b5bf0883cfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seeker: {fileID: 78398692}
+  target: {fileID: 1975402306}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -3768,7 +3785,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1372622462}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4785fd3ddd453a744a007b5bf0883cfb, type: 3}
   m_Name: 

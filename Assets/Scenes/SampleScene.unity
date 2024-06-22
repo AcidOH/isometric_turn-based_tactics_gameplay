@@ -3465,8 +3465,8 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 0
-  gridSizeX: 20
-  gridSizeY: 20
+  gridSizeX: 17
+  gridSizeY: 17
 --- !u!114 &306817043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3624,6 +3624,18 @@ PrefabInstance:
     - target: {fileID: 2422721076473373379, guid: e2df79052fd73f749b8cf12feee3c777, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940016196862313278, guid: e2df79052fd73f749b8cf12feee3c777, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940016196862313278, guid: e2df79052fd73f749b8cf12feee3c777, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6940016196862313278, guid: e2df79052fd73f749b8cf12feee3c777, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

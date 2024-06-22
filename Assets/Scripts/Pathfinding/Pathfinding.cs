@@ -16,36 +16,29 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-	    Debug.Log("seeker: " + seeker.position + ", target: " + target.position);
-		FindPath(seeker.position, target.position);
+	    if (Input.GetButtonDown("Jump")) //spacebar
+		{
+			Debug.Log("seeker: " + seeker.position + ", target: " + target.position);
+			FindPath(seeker.position, target.position);
+		}
     }
 
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
-	    Debug.Log("FindPath is called");
+		Debug.Log("FindPath is called");
 		Debug.Log("startPos: " + startPos + ", targetPos: " + targetPos);
 
 		Node startNode = grid.NodeFromWorldPoint(startPos);
 	    Node targetNode = grid.NodeFromWorldPoint(targetPos);
 	
-        List<Node> openSet = new List<Node>();
+        Heap<Node> openSet = new Heap<Node>(grid.maxHeapSize);
 	    HashSet<Node> closedSet = new HashSet<Node>();
 	
         openSet.Add(startNode);
 	
         while (openSet.Count > 0)
 	    {
-		    Node currentNode = openSet[0];
-		
-            for (int i = 1; i < openSet.Count; i ++)
-		    {
-			    if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && 					openSet[i].hCost < currentNode.hCost)
-			    {
-				    currentNode = openSet[i];
-			    }
-		    }
-		
-            openSet.Remove(currentNode);
+		    Node currentNode = openSet.RemoveFirst();
 	    	closedSet.Add(currentNode);
 
             if(currentNode == targetNode)

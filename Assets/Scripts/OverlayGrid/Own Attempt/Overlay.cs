@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class Overlay : MonoBehaviour
 {
+    
     public GameObject overlayTilePrefab;
     public GameObject overlayContainer;
 
@@ -15,6 +16,7 @@ public class Overlay : MonoBehaviour
     private bool preTileExists;
 
     //NODEGRID:
+    public bool onlyDisplayPathGizmos;
     //public Transform player;
     public LayerMask unwalkableMask;
     Node[,] grid;
@@ -116,6 +118,14 @@ public class Overlay : MonoBehaviour
     }
 
     //NODEGRID:
+    public int maxHeapSize
+    {
+        get
+        {
+            return gridSizeX*gridSizeY;
+        }
+    }
+    
     void CreateGrid()
     {
         Debug.Log("Entered CreateGrid()");
@@ -142,8 +152,9 @@ public class Overlay : MonoBehaviour
 	    {
 		    for (int y = -1; y <= 1; y++)
 		    {
+			    //if ((x == y) || (x == -1 && y == 1) || (x == 1 && y == -1)) //ignores of corners and center
 			    if (x == 0 && y == 0)
-			    {
+                {
 				    continue;
 			    }
 			    
@@ -208,31 +219,44 @@ public class Overlay : MonoBehaviour
 	    Gizmos.DrawWireCube(transform.position, new Vector3(gridSizeX, gridSizeY, 1));
         //^ you've mixed up gridSize and gridWorldSize (not really significant rn, but something to note)
         
-        if (grid != null)
+        if(onlyDisplayPathGizmos)
         {
-            //Node playerNode = NodeFromWorldPoint(player.position);
+            if (path != null)
+            {
+                foreach (Node n in path)
+                {
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
+                }
+            } else
+            {
+                if (grid != null)
+                {
+                    //Node playerNode = NodeFromWorldPoint(player.position);
 		
-            foreach (Node n in grid)
-		    {
-			    Debug.Log("Node n in grid: " + n);
+                    foreach (Node n in grid)
+		            {
+			            Debug.Log("Node n in grid: " + n);
 
-                Gizmos.color = (n.walkable)?Color.white:Color.red;
+                        Gizmos.color = (n.walkable)?Color.white:Color.red;
 			
-                if (path != null)
-			    {
-				    if (path.Contains(n))
-				    {
-					    Gizmos.color = Color.black;
-				    }
-			    }
+                        if (path != null)
+			            {  
+				            if (path.Contains(n))
+				            {
+					            Gizmos.color = Color.black;
+				            }
+			            }
 			
-                /*if (playerNode == n) 
-			    {
-				    Gizmos.color = Color.cyan;
-			    }*/
+                        /*if (playerNode == n) 
+			            {
+				            Gizmos.color = Color.cyan;
+			            }*/
 
-			    Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
-		    }
+			            Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
+		            }
+                }
+            }
         }
     }
 }

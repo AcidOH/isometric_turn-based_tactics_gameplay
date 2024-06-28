@@ -18,6 +18,7 @@ public class Cursor : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+        Debug.Log("Camera height: " + cam.pixelHeight + ", width: " + cam.pixelWidth);
     }
 
     // Update is called once per frame

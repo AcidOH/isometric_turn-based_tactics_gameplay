@@ -94,8 +94,6 @@ public class Overlay : MonoBehaviour
         }
 
         CreateGrid();
-        Debug.Log("Grid: " + grid);
-
     }
 
     private Vector3 tileTypeIdentifier(string _tileName)
@@ -128,7 +126,7 @@ public class Overlay : MonoBehaviour
     
     void CreateGrid()
     {
-        Debug.Log("Entered CreateGrid()");
+        //Debug.Log("Entered CreateGrid()");
 		
         grid = new Node[gridSizeX, gridSizeY];
         
@@ -138,8 +136,8 @@ public class Overlay : MonoBehaviour
 			//bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
 			//^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
 			
-            Debug.Log("Entered foreach in CreateGrid, bool walkable was set");
-            Debug.Log("overlayTilePos.Key = " + overlayTilePos.Key + ", overlayTilePos.Value = " + overlayTilePos.Value);
+            //Debug.Log("Entered foreach in CreateGrid, bool walkable was set");
+            //Debug.Log("overlayTilePos.Key = " + overlayTilePos.Key + ", overlayTilePos.Value = " + overlayTilePos.Value);
 			
             grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
 		}
@@ -216,10 +214,10 @@ public class Overlay : MonoBehaviour
 
     void OnDrawGizmos()
     {
-	    Gizmos.DrawWireCube(transform.position, new Vector3(gridSizeX, gridSizeY, 1));
+	    //Gizmos.DrawWireCube(transform.position, new Vector3(gridSizeX, gridSizeY, 1));
         //^ you've mixed up gridSize and gridWorldSize (not really significant rn, but something to note)
         
-        if(onlyDisplayPathGizmos)
+        /*if(onlyDisplayPathGizmos)
         {
             if (path != null)
             {
@@ -229,15 +227,13 @@ public class Overlay : MonoBehaviour
                     Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
                 }
             } else
-            {
+            {*/
                 if (grid != null)
                 {
                     //Node playerNode = NodeFromWorldPoint(player.position);
 		
                     foreach (Node n in grid)
 		            {
-			            Debug.Log("Node n in grid: " + n);
-
                         Gizmos.color = (n.walkable)?Color.white:Color.red;
 			
                         if (path != null)
@@ -256,7 +252,7 @@ public class Overlay : MonoBehaviour
 			            Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
 		            }
                 }
-            }
-        }
+            //}
+        //}
     }
 }

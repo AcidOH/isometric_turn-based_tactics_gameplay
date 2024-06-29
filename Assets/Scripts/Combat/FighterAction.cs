@@ -1,18 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FighterAction : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private GameObject hero;
+    private GameObject enemy;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField]
+    private GameObject meleePrefab;
+
+    [SerializeField]
+    private GameObject rangePrefab;
+
+    //[SerializeField]
+    //private Sprite faceIcon;
+
+    private GameObject currentAttack;
+
+    void Awake()
     {
-        
+        hero = GameObject.FindGameObjectWithTag("Hero");
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
+    }
+    public void SelectAttack(string btn)
+    {
+        GameObject victim = hero;
+        if (tag == "Hero")
+        {
+            victim = enemy;
+        }
+        if (btn.CompareTo("melee") == 0)
+        {
+            Debug.Log(victim + " was hit by melee attack!");
+            meleePrefab.GetComponent<AttackScript>().Attack(victim);
+
+        }
+        else if (btn.CompareTo("range") == 0)
+        {
+            Debug.Log(victim + " was hit by range attack!");
+            rangePrefab.GetComponent<AttackScript>().Attack(victim);
+        }
+        else
+        {
+            Debug.Log("Run");
+        }
     }
 }

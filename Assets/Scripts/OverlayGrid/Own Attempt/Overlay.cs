@@ -5,7 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class Overlay : MonoBehaviour
 {
-    
+    //public Tilemap tileMap;
+
     public GameObject overlayTilePrefab;
     public GameObject overlayContainer;
 
@@ -23,9 +24,11 @@ public class Overlay : MonoBehaviour
     public int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
 
-    //I'm not certain what this does, I'll keep it in until it starts causing errors \_(-^-)_/
-    //this deletes Grid and Tilemap when not attached to Grid...
-    private void Awake()
+    //What the code deletes depends on what Overlay is attached to
+        //deletes Grid and Tilemap when not attached to Grid...
+        //also sometimes deletes A* game object when attached to A*
+    
+    /*private void Awake()
     {
         if(instance != null && instance != this)
         {
@@ -36,9 +39,9 @@ public class Overlay : MonoBehaviour
             instance = this;
             Debug.Log("instance was set to this");
         } //deletes overlay tiles if script is/has already been run
-    }
+    }*/
     
-    // Start is called before the first frame update
+
     void Start()
     {   
         //why do you need to instantiate dictionaries but not lists?
@@ -50,7 +53,11 @@ public class Overlay : MonoBehaviour
         }
 
         //Tilemap tilemap = GetComponent<Tilemap>(); //Tilemap isn't a component of Grid, but rather a child, so causes errors
-        var tileMap = gameObject.GetComponentInChildren<Tilemap>();
+        //var tileMap = gameObject.GetComponentInChildren<Tilemap>();
+
+        var tileMap = GameObject.Find("Grid").GetComponentInChildren<Tilemap>();
+        Debug.Log("Tilemap: " + tileMap);
+        
         tileMap.CompressBounds();
 
         Vector3Int origin = tileMap.origin;

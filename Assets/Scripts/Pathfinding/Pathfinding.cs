@@ -16,11 +16,8 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-	    if (Input.GetButtonDown("Jump")) //spacebar
-		{
-			Debug.Log("seeker: " + seeker.position + ", target: " + target.position);
-			FindPath(seeker.position, target.position);
-		}
+	    Debug.Log("seeker: " + seeker.position + ", target: " + target.position);
+		FindPath(seeker.position, target.position);
     }
 
     void FindPath(Vector3 startPos, Vector3 targetPos)

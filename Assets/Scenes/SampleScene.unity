@@ -221,14 +221,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthFill: {fileID: 355384885}
-  magicFill: {fileID: 1975529618}
-  health: 50
-  magic: 10
-  melee: 20
-  magicRange: 15
-  defense: 10
-  speed: 7
+  energyFill: {fileID: 1975529618}
   experience: 25
+  health: 50
+  defence: 0
+  resistance: 0
+  speed: 7
+  skill: 0
+  energy: 0
+  melee: 20
+  hit: 0
+  movement: 0
   nextActTurn: 0
 --- !u!114 &78398694
 MonoBehaviour:
@@ -5053,7 +5056,7 @@ GameObject:
   - component: {fileID: 962394511}
   - component: {fileID: 962394510}
   m_Layer: 5
-  m_Name: EnemyMagicFill
+  m_Name: EnemyEnergyFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6347,14 +6350,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthFill: {fileID: 81686426}
-  magicFill: {fileID: 962394508}
-  health: 50
-  magic: 20
-  melee: 10
-  magicRange: 15
-  defense: 10
-  speed: 7
+  energyFill: {fileID: 962394508}
   experience: 25
+  health: 50
+  defence: 0
+  resistance: 0
+  speed: 7
+  skill: 0
+  energy: 0
+  melee: 10
+  hit: 0
+  movement: 0
   nextActTurn: 0
 --- !u!114 &1975402309
 MonoBehaviour:
@@ -6382,7 +6388,7 @@ GameObject:
   - component: {fileID: 1975529621}
   - component: {fileID: 1975529620}
   m_Layer: 5
-  m_Name: HeroMagicFill
+  m_Name: HeroEnergyFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -13,34 +13,41 @@ public class FighterStats : MonoBehaviour, IComparable
     private GameObject healthFill;
 
     [SerializeField]
-    private GameObject magicFill;
+    private GameObject energyFill;
 
     [Header("Stats")]
-    public float health;
-    public float magic;
-    public float melee;
-    public float magicRange;
-    public float defense;
-    public float speed;
     public float experience;
+    public float health;
+    public float defence;
+    public float resistance;
+    public float speed;
+    public float skill;
+    public float energy; //(previous the "magic" stat)
+    public float melee; //a placeholder stat for an attack's inherent damage
+
+    [HideInInspector]
+    public float hit;
+
+    [HideInInspector]
+    public int movement;
 
     private float startHealth;
-    private float startMagic;
+    private float startEnergy;
 
     [HideInInspector]
     public int nextActTurn; //defined in CalculateNextTurn
 
     private bool dead = false;
 
-    // Resize health and magic bar
+    // Resize health and energy bar
     private Transform healthTransform;
-    private Transform magicTransform;
+    private Transform energyTransform;
 
     private Vector2 healthScale; //determined by stats in Awake
-    private Vector2 magicScale;
+    private Vector2 energyScale;
 
     private float xNewHealthScale; //defined in ReceiveDamage
-    private float xNewMagicScale;
+    private float xNewEnergyScale;
 
     private GameObject GameControllerObj;
 
@@ -49,13 +56,16 @@ public class FighterStats : MonoBehaviour, IComparable
         healthTransform = healthFill.GetComponent<RectTransform>();
         healthScale = healthFill.transform.localScale;
 
-        magicTransform = magicFill.GetComponent<RectTransform>();
-        magicScale = magicFill.transform.localScale;
+        energyTransform = energyFill.GetComponent<RectTransform>();
+        energyScale = energyFill.transform.localScale;
 
         startHealth = health;
-        startMagic = magic;
+        startEnergy = energy;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
+
+        hit = speed + skill;
+        movement = Mathf.CeilToInt(speed / 2);
     }
 
     public void ReceiveDamage(float damage) //called in Attack Script (Attack)
@@ -89,13 +99,13 @@ public class FighterStats : MonoBehaviour, IComparable
         Invoke("ContinueGame", 2);
     }
 
-    public void updateMagicFill(float cost) //called in Attack Script
+    public void updateEnergyFill(float cost) //called in Attack Script
     {
-        if (cost > 0) //only for the magic fill: there's already a check for enough magic left in Attack Script
+        if (cost > 0) //only for the energy fill: there's already a check for enough energy left in Attack Script
         {
-            magic = magic - cost;
-            xNewMagicScale = magicScale.x * (magic / startMagic);
-            magicFill.transform.localScale = new Vector2(xNewMagicScale, magicScale.y);
+            energy = energy - cost;
+            xNewEnergyScale = energyScale.x * (energy / startEnergy);
+            energyFill.transform.localScale = new Vector2(xNewEnergyScale, energyScale.y);
         }
     }
 

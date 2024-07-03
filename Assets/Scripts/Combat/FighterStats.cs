@@ -28,7 +28,7 @@ public class FighterStats : MonoBehaviour, IComparable
     private float startMagic;
 
     [HideInInspector]
-    public int nextActTurn;
+    public int nextActTurn; //defined in CalculateNextTurn
 
     private bool dead = false;
 
@@ -36,10 +36,10 @@ public class FighterStats : MonoBehaviour, IComparable
     private Transform healthTransform;
     private Transform magicTransform;
 
-    private Vector2 healthScale;
+    private Vector2 healthScale; //determined by stats in Awake
     private Vector2 magicScale;
 
-    private float xNewHealthScale;
+    private float xNewHealthScale; //defined in ReceiveDamage
     private float xNewMagicScale;
 
     private GameObject GameControllerObj;
@@ -58,7 +58,7 @@ public class FighterStats : MonoBehaviour, IComparable
         GameControllerObj = GameObject.Find("GameControllerObject");
     }
 
-    public void ReceiveDamage(float damage)
+    public void ReceiveDamage(float damage) //called in Attack Script (Attack)
     {
         health = health - damage;
         Debug.Log("Damage = " + damage);
@@ -81,7 +81,7 @@ public class FighterStats : MonoBehaviour, IComparable
             xNewHealthScale = healthScale.x * (health / startHealth);
             healthFill.transform.localScale = new Vector2(xNewHealthScale, healthScale.y);
         }
-        if (damage > 0)
+        if (damage > 0) //for battleText, could be part of previous else if
         {
             GameControllerObj.GetComponent<GameController>().battleText.gameObject.SetActive(true);
             GameControllerObj.GetComponent<GameController>().battleText.text = damage.ToString();
@@ -89,9 +89,9 @@ public class FighterStats : MonoBehaviour, IComparable
         Invoke("ContinueGame", 2);
     }
 
-    public void updateMagicFill(float cost)
+    public void updateMagicFill(float cost) //called in Attack Script
     {
-        if (cost > 0)
+        if (cost > 0) //only for the magic fill: there's already a check for enough magic left in Attack Script
         {
             magic = magic - cost;
             xNewMagicScale = magicScale.x * (magic / startMagic);
@@ -99,21 +99,21 @@ public class FighterStats : MonoBehaviour, IComparable
         }
     }
 
-    public bool GetDead()
+    public bool GetDead() //called in Game Controller
     {
         return dead;
     }
 
-    void ContinueGame()
+    void ContinueGame() //invoked in ReceiveDamage
     {
         GameObject.Find("GameControllerObject").GetComponent<GameController>().NextTurn();
     }
-    public void CalculateNextTurn(int currentTurn)
+    public void CalculateNextTurn(int currentTurn) //called in Game Controller
     {
         nextActTurn = currentTurn + Mathf.CeilToInt(100f / speed);
     }
 
-    public int CompareTo(object otherStats)
+    public int CompareTo(object otherStats) //be mindful that both the fcn and the method are called CompareTo
     {
         int nex = nextActTurn.CompareTo(((FighterStats)otherStats).nextActTurn);
         return nex;

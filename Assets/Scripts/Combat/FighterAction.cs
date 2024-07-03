@@ -24,7 +24,7 @@ public class FighterAction : MonoBehaviour
         hero = GameObject.FindGameObjectWithTag("Hero");
         enemy = GameObject.FindGameObjectWithTag("Enemy");
     }
-    public void SelectAttack(string btn)
+    public void SelectAttack(string btn) //called by Make Button
     {
         GameObject victim = hero;
         if (tag == "Hero")

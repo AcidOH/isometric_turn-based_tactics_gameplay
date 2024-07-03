@@ -30,5 +30,5 @@ public class MakeButton : MonoBehaviour
         {
             hero.GetComponent<FighterAction>().SelectAttack("run");
         }
-    }
+    } //when button pressed, checks who is attacked in Fighter Action, then calls Attack() in Attack Script
 }

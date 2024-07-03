@@ -31,11 +31,11 @@ public class AttackScript : MonoBehaviour
     private FighterStats targetStats;
     private float damage = 0.0f;
 
-    public void Attack(GameObject victim)
+    public void Attack(GameObject victim) //called in Fighter Action
     {
         attackerStats = owner.GetComponent<FighterStats>();
         targetStats = victim.GetComponent<FighterStats>();
-        if (attackerStats.magic >= magicCost)
+        if (attackerStats.magic >= magicCost) //checks for enough mana
         {
             float multiplier = Random.Range(minAttackMultiplier, maxAttackMultiplier);
 
@@ -53,7 +53,7 @@ public class AttackScript : MonoBehaviour
         }
         else
         {
-            Invoke("SkipTurnContinueGame", 2);
+            Invoke("SkipTurnContinueGame", 2); //I'm not sure you want a delay...
         }
     }
 

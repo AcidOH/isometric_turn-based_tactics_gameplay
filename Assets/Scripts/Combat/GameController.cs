@@ -12,13 +12,13 @@ public class GameController : MonoBehaviour
 
     private GameObject battleMenu;
 
-    public TextMeshProUGUI battleText;
+    public TextMeshProUGUI battleText; //from Fighter Stats, shows damage done
 
     private void Awake()
     {
         battleMenu = GameObject.Find("ActionMenu");
     }
-    void Start()
+    void Start() //adds turn speed to list, sorts to determine turn order
     {
         fighterStats = new List<FighterStats>();
         GameObject hero = GameObject.FindGameObjectWithTag("Hero");
@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour
         NextTurn();
     }
 
-    public void NextTurn()
+    public void NextTurn() //calls itself in a loop unless a character dies
     {
         battleText.gameObject.SetActive(false);
         FighterStats currentFighterStats = fighterStats[0];

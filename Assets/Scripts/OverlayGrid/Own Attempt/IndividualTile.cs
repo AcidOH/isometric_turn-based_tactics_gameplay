@@ -23,20 +23,6 @@ public class IndividualTiles : MonoBehaviour
         // a LateUpdate in the Cursor code makes the selected one appear after Update occurs
     }
 
-    /*void OnMouseDown() //find a way to limit the number of tiles selected at a time to 1
-    {
-        if (isInvisible == true)
-            {
-                ShowTile();
-                isInvisible = false;
-            } 
-        else if (isInvisible == false)
-            {
-                HideTile();
-                isInvisible = true;
-            }
-    }*/
-
     public void ShowTile()
     {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);

@@ -1,16 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+//using UnityEngine.Timeline;
 
 public class Overlay : MonoBehaviour
 {
-    //public Tilemap tileMap;
-
     public GameObject overlayTilePrefab;
     public GameObject overlayContainer;
 
-    public static Overlay instance;
+    //public static Overlay instance;
     public List<Vector3Int> tiles; //contains all overlay tile positions (in tilemap coords) which only exist on very top of map
     public List<Vector2Int> tiles2D; //all overlay tile positions without z coordinate (in tilemap coords)
     public Dictionary<Vector3Int, Vector3> tilesGridandWorldPos;
@@ -18,16 +18,22 @@ public class Overlay : MonoBehaviour
 
     //NODEGRID:
     public bool onlyDisplayPathGizmos;
-    //public Transform player;
     public LayerMask unwalkableMask;
-    Node[,] grid;
     public int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
+    Node[,] grid;
+
+    [HideInInspector]
+    public List<Node> path;
+
+    PathIndicator pathIndicator;
+
+    public List<Sprite> arrowSprites;
 
     //What the code deletes depends on what Overlay is attached to
-        //deletes Grid and Tilemap when not attached to Grid...
-        //also sometimes deletes A* game object when attached to A*
-    
+    //deletes Grid and Tilemap when not attached to Grid...
+    //also sometimes deletes A* game object when attached to A*
+
     /*private void Awake()
     {
         if(instance != null && instance != this)
@@ -40,10 +46,12 @@ public class Overlay : MonoBehaviour
             Debug.Log("instance was set to this");
         } //deletes overlay tiles if script is/has already been run
     }*/
-    
+
 
     void Start()
-    {   
+    {
+        pathIndicator = GetComponent<PathIndicator>();
+        
         //why do you need to instantiate dictionaries but not lists?
         tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
 
@@ -51,9 +59,6 @@ public class Overlay : MonoBehaviour
         {
             preTileExists = true;
         }
-
-        //Tilemap tilemap = GetComponent<Tilemap>(); //Tilemap isn't a component of Grid, but rather a child, so causes errors
-        //var tileMap = gameObject.GetComponentInChildren<Tilemap>();
 
         var tileMap = GameObject.Find("Grid").GetComponentInChildren<Tilemap>();
         Debug.Log("Tilemap: " + tileMap);
@@ -72,7 +77,6 @@ public class Overlay : MonoBehaviour
             {
                 tiles.Add(tileLocation);
                 tiles2D.Add(new Vector2Int(tileLocation.x, tileLocation.y));
-                //Debug.Log("Tilemap tile location:" + tileLocation);
             }
         }
 
@@ -132,9 +136,7 @@ public class Overlay : MonoBehaviour
     }
     
     void CreateGrid()
-    {
-        //Debug.Log("Entered CreateGrid()");
-		
+    {	
         grid = new Node[gridSizeX, gridSizeY];
         
         foreach (var overlayTilePos in tilesGridandWorldPos)
@@ -142,9 +144,6 @@ public class Overlay : MonoBehaviour
             bool walkable = true;
 			//bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
 			//^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
-			
-            //Debug.Log("Entered foreach in CreateGrid, bool walkable was set");
-            //Debug.Log("overlayTilePos.Key = " + overlayTilePos.Key + ", overlayTilePos.Value = " + overlayTilePos.Value);
 			
             grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
 		}
@@ -178,6 +177,7 @@ public class Overlay : MonoBehaviour
     public Node NodeFromWorldPoint(Vector3 targetWorldPosition) //can get world point from raycast in from Cursor script
     {
 		Debug.Log("NodeFromWorldPoint was called");
+        Debug.Log("targetWorldPosition: " + targetWorldPosition);
         
         //THIS IS BORROWED FROM CURSOR SCRIPT! (You need to turn it into a function that you can reuse)
         RaycastHit2D hit = Physics2D.Raycast(targetWorldPosition, Vector2.zero);
@@ -190,19 +190,27 @@ public class Overlay : MonoBehaviour
             GameObject hitOverlayTile = hit.collider.gameObject;
             Vector3 hitOverlayTilePos = hit.transform.position;
 
-			foreach (var overlayTilePos in tilesGridandWorldPos)
-			{
-				if (hitOverlayTilePos == overlayTilePos.Value)
-				{
-					Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
-                    int x = overlayTilePos.Key.x;
-			        int y = overlayTilePos.Key.y;
+            if (tilesGridandWorldPos != null)
+            {
+                Debug.Log("tilesGridandWorldPos != null");
+                foreach (var overlayTilePos in tilesGridandWorldPos)
+                {
+                    Debug.Log("In foreach loop");
+                    if (hitOverlayTilePos == overlayTilePos.Value)
+                    {
+                        Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
+                        int x = overlayTilePos.Key.x;
+                        int y = overlayTilePos.Key.y;
 
-                    Debug.Log("int x and int y were set. " + x + ", " + y);
+                        Debug.Log("int x and int y were set. " + x + ", " + y);
 
-                    return grid[x,y];
-				}
-			}
+                        return grid[x, y];
+                    }
+                }
+            } else
+            {
+                Debug.Log("tilesGridandWorldPos = null");
+            }
 			
 			//int index = overlayWorldGrid.IndexOf(hitOverlayTilePos); //returns -1
 			//Debug.Log("Index of hitOverlayTilePos in overlayWorldGrid: " + index);
@@ -217,49 +225,77 @@ public class Overlay : MonoBehaviour
 		return null;
     }
 
-    public List<Node> path;
-
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
-	    //Gizmos.DrawWireCube(transform.position, new Vector3(gridSizeX, gridSizeY, 1));
-        //^ you've mixed up gridSize and gridWorldSize (not really significant rn, but something to note)
-        
-        /*if(onlyDisplayPathGizmos)
+        if (grid != null)
         {
-            if (path != null)
+	        foreach (Node n in grid)
             {
-                foreach (Node n in path)
-                {
-                    Gizmos.color = Color.black;
-                    Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
-                }
-            } else
-            {*/
-                if (grid != null)
-                {
-                    //Node playerNode = NodeFromWorldPoint(player.position);
-		
-                    foreach (Node n in grid)
-		            {
-                        Gizmos.color = (n.walkable)?Color.white:Color.red;
+                Gizmos.color = (n.walkable)?Color.white:Color.red;
 			
-                        if (path != null)
-			            {  
-				            if (path.Contains(n))
-				            {
-					            Gizmos.color = Color.black;
-				            }
-			            }
-			
-                        /*if (playerNode == n) 
-			            {
-				            Gizmos.color = Color.cyan;
-			            }*/
-
-			            Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
+                if (path != null)
+			    {  
+	                if (path.Contains(n))
+			        {
+			            Gizmos.color = Color.black;
 		            }
-                }
-            //}
-        //}
+	            }
+                
+                Gizmos.DrawCube(n.worldPosition, new Vector3(0.25f, 0.25f, 0.25f));
+		    }
+        }
+    }*/
+
+    public void DrawPath()
+    {
+        if (path != null)
+        {
+            foreach (Node node in path)
+            {
+                int currentIndex = path.IndexOf(node);
+
+                (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
+
+                PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
+                SetArrowSprite(direction);
+            }
+        }
+    }
+
+    private (Vector2Int,Vector2Int) GetPrevAndNextNode(int i)
+    {
+        Vector2Int curr = new Vector2Int(path[i].gridX, path[i].gridY);
+        int h = i - 1;
+        int j = i + 1;
+
+        if (i == 0)
+        {
+            h = 0;
+        }
+        else if (i == path.Count - 1)
+        {
+            j = path.Count - 1;
+        }
+
+        Vector2Int prev = curr - new Vector2Int(path[h].gridX, path[h].gridY);
+        Vector2Int next = new Vector2Int(path[j].gridX, path[j].gridY) - curr;
+
+        return (prev, next);
+    }
+
+    private void SetArrowSprite(PathIndicator.ArrowDirection direction)
+    {
+        var arrow = GetComponentInChildren<SpriteRenderer>();
+
+        if (direction == PathIndicator.ArrowDirection.None)
+        {
+            arrow.color = new Color(1, 1, 1, 0);
+        }
+        else
+        {
+            arrow.color = new Color(1, 1, 1, 1);
+            arrow.sprite = arrowSprites[(int)direction];
+            //arrow.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;  
+        }
     }
 }

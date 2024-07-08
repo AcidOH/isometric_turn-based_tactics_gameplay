@@ -4118,6 +4118,7 @@ MonoBehaviour:
     m_Bits: 0
   gridSizeX: 17
   gridSizeY: 17
+  arrowSprites: []
 --- !u!114 &306817043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5606,6 +5607,7 @@ GameObject:
   - component: {fileID: 1372622465}
   - component: {fileID: 1372622467}
   - component: {fileID: 1372622466}
+  - component: {fileID: 1372622468}
   m_Layer: 0
   m_Name: A*
   m_TagString: Untagged
@@ -5664,6 +5666,30 @@ MonoBehaviour:
     m_Bits: 0
   gridSizeX: 17
   gridSizeY: 17
+  arrowSprites:
+  - {fileID: 0}
+  - {fileID: -1328528096, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 975047049, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1310749355, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1058294104, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 1832058696, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 1868088703, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 1070561827, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1756903337, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1887084618, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 33385708, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+--- !u!114 &1372622468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372622462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5ac0d902ba69c945a42183a3b14a4ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1452757803
 GameObject:
   m_ObjectHideFlags: 0

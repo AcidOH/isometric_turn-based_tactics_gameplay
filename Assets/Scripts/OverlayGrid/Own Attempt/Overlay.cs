@@ -13,7 +13,8 @@ public class Overlay : MonoBehaviour
     //public static Overlay instance;
     public List<Vector3Int> tiles; //contains all overlay tile positions (in tilemap coords) which only exist on very top of map
     public List<Vector2Int> tiles2D; //all overlay tile positions without z coordinate (in tilemap coords)
-    public Dictionary<Vector3Int, Vector3> tilesGridandWorldPos;
+    public List<(Vector3Int, Vector3, GameObject)> nodeAndTileInfo;
+    //public Dictionary<Vector3Int, Vector3> tilesGridandWorldPos;
     private bool preTileExists;
 
     //NODEGRID:
@@ -53,7 +54,8 @@ public class Overlay : MonoBehaviour
         pathIndicator = GetComponent<PathIndicator>();
         
         //why do you need to instantiate dictionaries but not lists?
-        tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
+        //tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
+        nodeAndTileInfo = new List<(Vector3Int, Vector3, GameObject)> ();
 
         if (overlayTilePrefab != null)
         {
@@ -88,7 +90,8 @@ public class Overlay : MonoBehaviour
             Vector3 tileOfset = tileTypeIdentifier(tileName);
 
             Vector3 tileWorldPos = cellPosition + tileOfset;
-            tilesGridandWorldPos.Add(location - origin, tileWorldPos); //subtracting origin should make it so that the grid is onlt positive values, with bottom left being (0,0)
+
+            GameObject tile = overlayTilePrefab;
 
             if (preTileExists == true)
             {
@@ -97,11 +100,13 @@ public class Overlay : MonoBehaviour
             } 
             else 
             {
-                if (tileOfset != new Vector3(0,0,0))
+                if (tileOfset != Vector3.zero)
                 {
-                    Instantiate(overlayTilePrefab, tileWorldPos, Quaternion.identity, overlayContainer.transform);
+                    tile = Instantiate(overlayTilePrefab, tileWorldPos, Quaternion.identity, overlayContainer.transform);
                 }
             }
+
+            nodeAndTileInfo.Add((location - origin, tileWorldPos, tile));
         }
 
         CreateGrid();
@@ -139,14 +144,14 @@ public class Overlay : MonoBehaviour
     {	
         grid = new Node[gridSizeX, gridSizeY];
         
-        foreach (var overlayTilePos in tilesGridandWorldPos)
+        foreach (var overlayTilePos in nodeAndTileInfo)
         {
             bool walkable = true;
-			//bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
-			//^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
-			
-            grid[overlayTilePos.Key.x, overlayTilePos.Key.y] = new Node(walkable, overlayTilePos.Value, overlayTilePos.Key.x, overlayTilePos.Key.y);
-		}
+            //bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadiusX, unwalkableMask));
+            //^THIS MAY NOT BE THE WAY YOU WANT TO CHECK FOR COLLISIONS!
+
+            grid[overlayTilePos.Item1.x, overlayTilePos.Item1.y] = new Node(walkable, overlayTilePos.Item2, overlayTilePos.Item1.x, overlayTilePos.Item1.y, overlayTilePos.Item3);
+        }
     }
 
     public List<Node> GetNeighbours(Node node)
@@ -156,8 +161,8 @@ public class Overlay : MonoBehaviour
 	    {
 		    for (int y = -1; y <= 1; y++)
 		    {
-			    //if ((x == y) || (x == -1 && y == 1) || (x == 1 && y == -1)) //ignores of corners and center
-			    if (x == 0 && y == 0)
+			    if ((x == y) || (x == -1 && y == 1) || (x == 1 && y == -1)) //ignores of corners and center
+			    //if (x == 0 && y == 0)
                 {
 				    continue;
 			    }
@@ -190,17 +195,17 @@ public class Overlay : MonoBehaviour
             GameObject hitOverlayTile = hit.collider.gameObject;
             Vector3 hitOverlayTilePos = hit.transform.position;
 
-            if (tilesGridandWorldPos != null)
+            if (nodeAndTileInfo != null)
             {
                 Debug.Log("tilesGridandWorldPos != null");
-                foreach (var overlayTilePos in tilesGridandWorldPos)
+                foreach (var overlayTilePos in nodeAndTileInfo)
                 {
                     Debug.Log("In foreach loop");
-                    if (hitOverlayTilePos == overlayTilePos.Value)
+                    if (hitOverlayTilePos == overlayTilePos.Item2)
                     {
                         Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
-                        int x = overlayTilePos.Key.x;
-                        int y = overlayTilePos.Key.y;
+                        int x = overlayTilePos.Item1.x;
+                        int y = overlayTilePos.Item1.y;
 
                         Debug.Log("int x and int y were set. " + x + ", " + y);
 
@@ -257,7 +262,7 @@ public class Overlay : MonoBehaviour
                 (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
 
                 PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
-                SetArrowSprite(direction);
+                SetArrowSprite(node, direction);
             }
         }
     }
@@ -283,18 +288,18 @@ public class Overlay : MonoBehaviour
         return (prev, next);
     }
 
-    private void SetArrowSprite(PathIndicator.ArrowDirection direction)
+    private void SetArrowSprite(Node _node, PathIndicator.ArrowDirection _direction)
     {
-        var arrow = GetComponentInChildren<SpriteRenderer>();
+        var arrow = _node.overlayTile.GetComponentInChildren<SpriteRenderer>();
 
-        if (direction == PathIndicator.ArrowDirection.None)
+        if (_direction == PathIndicator.ArrowDirection.None)
         {
             arrow.color = new Color(1, 1, 1, 0);
         }
         else
         {
             arrow.color = new Color(1, 1, 1, 1);
-            arrow.sprite = arrowSprites[(int)direction];
+            arrow.sprite = arrowSprites[(int)_direction];
             //arrow.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;  
         }
     }

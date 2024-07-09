@@ -8,16 +8,19 @@ public class Node : IHeapItem<Node>
 	public Vector3 worldPosition; //world position of the node
 	public int gridX;
 	public int gridY;
+	public GameObject overlayTile;
+
 	public int gCost;
 	public int hCost;
 	public Node parent;
 	int heapIndex;
-	public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY) //assigns values when node is created
+	public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY, GameObject _overlayTile) //assigns values when node is created
 	{
 		walkable = _walkable;
 		worldPosition = _worldPos;
 		gridX = _gridX;
 		gridY = _gridY;
+		overlayTile = _overlayTile;
 	}
 	
 	public int fCost

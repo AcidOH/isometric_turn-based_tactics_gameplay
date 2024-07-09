@@ -18,7 +18,7 @@ public class Overlay : MonoBehaviour
     private bool preTileExists;
 
     //NODEGRID:
-    public bool onlyDisplayPathGizmos;
+    //public bool onlyDisplayPathGizmos;
     public LayerMask unwalkableMask;
     public int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
@@ -53,7 +53,6 @@ public class Overlay : MonoBehaviour
     {
         pathIndicator = GetComponent<PathIndicator>();
         
-        //why do you need to instantiate dictionaries but not lists?
         //tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
         nodeAndTileInfo = new List<(Vector3Int, Vector3, GameObject)> ();
 
@@ -126,7 +125,7 @@ public class Overlay : MonoBehaviour
         }
         //You have to do this for every new type of tile you add to the tilemap.
 
-        //THE BUG WHERE CERTAIN OVERLAYTILES DONT SORT PROPERLY BEHIDE TILEMAP TILES IS STILL PRESENT!
+        //THE BUG WHERE CERTAIN OVERLAYTILES DON'T SORT PROPERLY BEHIDE TILEMAP TILES IS STILL PRESENT!
         
         return _tileOfset;
     }
@@ -262,7 +261,21 @@ public class Overlay : MonoBehaviour
                 (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
 
                 PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
+                Debug.Log("ArrowDirection direction = " +  direction);
                 SetArrowSprite(node, direction);
+            }
+        }
+    }
+
+    public void ErasePath()
+    {
+        if (path != null)
+        {
+            foreach (Node node in path)
+            {
+                var arrow = node.overlayTile.GetComponentInChildren<SpriteRenderer>();
+                arrow.color = new Color(1, 1, 1, 0);
+                arrow.sprite = arrowSprites[0];
             }
         }
     }
@@ -300,7 +313,7 @@ public class Overlay : MonoBehaviour
         {
             arrow.color = new Color(1, 1, 1, 1);
             arrow.sprite = arrowSprites[(int)_direction];
-            //arrow.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;  
+            //arrow.sortingOrder = 1; //it can be the same sorting layer as the overlaytiles (since it is technically an overlaytile)
         }
     }
 }

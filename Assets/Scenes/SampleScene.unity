@@ -4059,8 +4059,6 @@ GameObject:
   m_Component:
   - component: {fileID: 306817041}
   - component: {fileID: 306817040}
-  - component: {fileID: 306817042}
-  - component: {fileID: 306817043}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -4096,43 +4094,6 @@ Transform:
   - {fileID: 270719129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &306817042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 306817039}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 376ca46d73ba12d4383db9d98ba54779, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  overlayTilePrefab: {fileID: 2051132390}
-  overlayContainer: {fileID: 1046283158}
-  tiles: []
-  tiles2D: []
-  onlyDisplayPathGizmos: 0
-  unwalkableMask:
-    serializedVersion: 2
-    m_Bits: 0
-  gridSizeX: 17
-  gridSizeY: 17
-  arrowSprites: []
---- !u!114 &306817043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 306817039}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4785fd3ddd453a744a007b5bf0883cfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  seeker: {fileID: 78398692}
-  target: {fileID: 1975402306}
 --- !u!1 &355384885
 GameObject:
   m_ObjectHideFlags: 0
@@ -5660,24 +5621,23 @@ MonoBehaviour:
   overlayContainer: {fileID: 1046283158}
   tiles: []
   tiles2D: []
-  onlyDisplayPathGizmos: 0
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 0
   gridSizeX: 17
   gridSizeY: 17
   arrowSprites:
-  - {fileID: 0}
-  - {fileID: -1328528096, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1452077356, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: 975047049, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
-  - {fileID: -1310749355, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1328528096, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 1868088703, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: -1058294104, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: 1832058696, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
-  - {fileID: 1868088703, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
-  - {fileID: 1070561827, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
-  - {fileID: -1756903337, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1310749355, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: -1887084618, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: 33385708, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: -1756903337, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  - {fileID: 1070561827, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
 --- !u!114 &1372622468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6349,8 +6309,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 740599753
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -1933283064, guid: 0da5f9f9b51b43641b4a0e35d6ae5e02, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6752,18 +6712,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
   m_PrefabInstance: {fileID: 1991169360306889967}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2051132393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2051132390}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac1aa17e1b20eb241aad7cf716852a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2051132397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7056,6 +7004,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 106128371430742937, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
       propertyPath: m_Name
       value: OverlayTile
@@ -7108,9 +7060,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2051132393}
     - targetCorrespondingSourceObject: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2051132397}
@@ -7247,6 +7196,14 @@ PrefabInstance:
     - target: {fileID: 3336097919782736417, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240928226923660399, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240928226923660399, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 740599753
       objectReference: {fileID: 0}
     - target: {fileID: 4240928226923660399, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
       propertyPath: m_SpriteSortPoint

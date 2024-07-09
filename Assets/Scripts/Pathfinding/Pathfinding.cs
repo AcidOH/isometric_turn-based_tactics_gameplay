@@ -73,7 +73,9 @@ public class Pathfinding : MonoBehaviour
 
     void RetracePath(Node startNode, Node endNode)
     {
-	    List<Node> path = new List<Node>();
+        grid.ErasePath();
+        
+        List<Node> path = new List<Node>();
 	    Node currentNode = endNode;
 	
     while(currentNode != startNode)

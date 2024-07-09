@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// hello
 public class AttackScript : MonoBehaviour
 {
     public GameObject owner;
@@ -59,7 +60,7 @@ public class AttackScript : MonoBehaviour
             {
                 damage = 0.0f;
             }
-            
+
             //owner.GetComponent<Animator>().Play(animationName);
             targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
             attackerStats.updateEnergyFill(energyCost);
@@ -71,7 +72,7 @@ public class AttackScript : MonoBehaviour
     }
 
     public bool HitFromPercent(float percent)
-    { 
+    {
         int num = Random.Range(0, 101);
         if (num <= percent * 100)
         {

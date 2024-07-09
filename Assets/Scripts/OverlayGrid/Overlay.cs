@@ -22,7 +22,8 @@ public class Overlay : MonoBehaviour
     public LayerMask unwalkableMask;
     public int gridSizeX, gridSizeY; //can eventually switch to using tilemap.boundsint
 
-    Node[,] grid;
+    [HideInInspector]
+    public Node[,] grid;
 
     [HideInInspector]
     public List<Node> path;

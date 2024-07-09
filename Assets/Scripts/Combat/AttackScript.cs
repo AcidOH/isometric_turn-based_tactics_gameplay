@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-// hello
 public class AttackScript : MonoBehaviour
 {
     public GameObject owner;

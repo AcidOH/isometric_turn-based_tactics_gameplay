@@ -33,8 +33,8 @@ public class AttackScript : MonoBehaviour
 
     public void Attack(GameObject victim) //called in Fighter Action
     {
-        attackerStats = owner.GetComponent<FighterStats>();
-        targetStats = victim.GetComponent<FighterStats>();
+        attackerStats = owner.GetComponent<FighterStats>(); 
+        targetStats = victim.GetComponent<FighterStats>(); // victim is the thing being attacked
         if (attackerStats.energy >= energyCost) //checks for enough mana
         {
             float chanceToHit = attackerStats.hit / targetStats.hit;

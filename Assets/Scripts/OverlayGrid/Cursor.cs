@@ -90,7 +90,7 @@ public class Cursor : MonoBehaviour
     
     void playerMovement(Vector3 _posToMoveTo)
     {
-        player.transform.position = _posToMoveTo + new Vector3Int(0,0,-3);
+        player.transform.position = _posToMoveTo; //+ new Vector3Int(0,0,-3);
         //^this is silly because if you click on the same place twice you move out of the screen by 3 every time -_-
     }
 }

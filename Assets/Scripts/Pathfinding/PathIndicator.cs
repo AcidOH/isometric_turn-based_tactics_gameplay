@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class PathIndicator : MonoBehaviour
 {
-    public List<Node> path;
+    Overlay overlay;
+
+    public List<Sprite> arrowSprites;
+    //public bool useGradient;
 
     void Start()
     {
-        path = GetComponent<Overlay>().path;
+        overlay = GetComponent<Overlay>();
     }
 
     public enum ArrowDirection
@@ -67,5 +70,69 @@ public class PathIndicator : MonoBehaviour
             if (next == Vector2Int.left || next == Vector2Int.right) return ArrowDirection.LeftOrRight;
         }
         return ArrowDirection.None;
+    }
+
+    public void DrawPath()
+    {
+        if (overlay.path != null)
+        {
+            //if (useGradient != true)
+            //{
+                for (int i = 0; i < overlay.path.Count - 1; i++)
+                {
+                    int currentIndex = i;
+
+                    var arrow = overlay.path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
+                    arrow.color = new Color(1, 1, 1, 1);
+
+                    (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
+                    PathIndicator.ArrowDirection direction = TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
+
+                    SetArrowSprite(overlay.path[i], direction);
+                }
+            //}
+        }
+    }
+
+    public void ErasePath()
+    {
+        if (overlay.path != null)
+        {
+            for (int i = 0; i < overlay.path.Count - 1; i++)
+            {
+                var arrow = overlay.path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
+                arrow.color = new Color(1, 1, 1, 0);
+                arrow.sprite = arrowSprites[0];
+            }
+        }
+    }
+
+    private (Vector2Int, Vector2Int) GetPrevAndNextNode(int i)
+    {
+        Vector2Int curr = new Vector2Int(overlay.path[i].gridX, overlay.path[i].gridY);
+        int h = i - 1;
+        int j = i + 1;
+
+        if (i == 0)
+        {
+            h = 0;
+        }
+        else if (i == overlay.path.Count - 2)
+        {
+            j = overlay.path.Count - 2;
+        }
+
+        Vector2Int prev = curr - new Vector2Int(overlay.path[h].gridX, overlay.path[h].gridY);
+        Vector2Int next = new Vector2Int(overlay.path[j].gridX, overlay.path[j].gridY) - curr;
+
+        return (prev, next);
+    }
+
+    private void SetArrowSprite(Node _node, PathIndicator.ArrowDirection _direction)
+    {
+        var arrow = _node.overlayTile.GetComponentInChildren<SpriteRenderer>();
+
+        //arrow.color = new Color(1, 1, 1, 1);
+        arrow.sprite = arrowSprites[(int)_direction];
     }
 }

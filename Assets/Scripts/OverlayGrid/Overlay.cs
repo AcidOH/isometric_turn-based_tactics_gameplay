@@ -32,8 +32,6 @@ public class Overlay : MonoBehaviour
     PathIndicator pathIndicator;
     Cursor cursor;
 
-    public List<Sprite> arrowSprites;
-
     //What the code deletes depends on what Overlay is attached to
     //deletes Grid and Tilemap when not attached to Grid...
     //also sometimes deletes A* game object when attached to A*
@@ -200,77 +198,6 @@ public class Overlay : MonoBehaviour
         return null;
     }
 
-    public void DrawPath()
-    {
-        if (path != null)
-        {
-            for (int i = 0; i < path.Count-1; i++)
-            {
-                int currentIndex = i;
-
-                var arrow = path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
-                arrow.color = new Color(1, 1, 1, 1);
-
-                (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
-                PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
-
-                SetArrowSprite(path[i], direction);
-            }
-        }
-    }
-
-    public void ErasePath()
-    {
-        if (path != null)
-        {
-            for (int i = 0; i < path.Count-1; i++)
-            {
-                var arrow = path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
-                arrow.color = new Color(1, 1, 1, 0);
-                arrow.sprite = arrowSprites[0];
-            }
-        }
-    }
-
-    private (Vector2Int,Vector2Int) GetPrevAndNextNode(int i)
-    {
-        Vector2Int curr = new Vector2Int(path[i].gridX, path[i].gridY);
-        int h = i - 1;
-        int j = i + 1;
-
-        if (i == 0)
-        {
-            h = 0;
-        }
-        else if (i == path.Count - 2)
-        {
-            j = path.Count - 2;
-        }
-
-        Vector2Int prev = curr - new Vector2Int(path[h].gridX, path[h].gridY);
-        Vector2Int next = new Vector2Int(path[j].gridX, path[j].gridY) - curr;
-
-        return (prev, next);
-    }
-
-    private void SetArrowSprite(Node _node, PathIndicator.ArrowDirection _direction)
-    {
-        var arrow = _node.overlayTile.GetComponentInChildren<SpriteRenderer>();
-
-        //arrow.color = new Color(1, 1, 1, 1);
-        arrow.sprite = arrowSprites[(int)_direction];
-
-        /*if (_direction == PathIndicator.ArrowDirection.None)
-        {
-            arrow.color = new Color(1, 1, 1, 0);
-        }
-        else
-        {
-            arrow.color = new Color(1, 1, 1, 1);
-            arrow.sprite = arrowSprites[(int)_direction];
-            //arrow.sortingOrder = 1; //it can be the same sorting layer as the overlaytiles (since it is technically an overlaytile)
-        }*/
-    }
 
     /*void OnDrawGizmos()
     {

@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
 {
+    [HideInInspector]
     public Transform seeker, target;
 
     Overlay grid;
+    PathIndicator pathIndicator;
 
     void Awake()
     {
 	    grid = GetComponent<Overlay>();
+        pathIndicator = GetComponent<PathIndicator>();
     }
 
     /*void Update()
@@ -71,7 +74,7 @@ public class Pathfinding : MonoBehaviour
 
     void RetracePath(Node startNode, Node endNode)
     {
-        grid.ErasePath();
+        pathIndicator.ErasePath();
         
         List<Node> path = new List<Node>();
 	    Node currentNode = endNode;
@@ -85,7 +88,7 @@ public class Pathfinding : MonoBehaviour
         path.Reverse();
 	    grid.path = path;
 
-        grid.DrawPath();
+        pathIndicator.DrawPath();
     }
 
     int GetDistance(Node nodeA, Node nodeB)

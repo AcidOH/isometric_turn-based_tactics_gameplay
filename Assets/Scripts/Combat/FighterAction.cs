@@ -40,7 +40,7 @@ public class FighterAction : MonoBehaviour
         else if (btn.CompareTo("range") == 0)
         {
             Debug.Log(victim + " was hit by range attack!");
-            rangePrefab.GetComponent<AttackScript>().Attack(victim);
+            //rangePrefab.GetComponent<AttackScript>().Attack(victim);
         }
         else
         {

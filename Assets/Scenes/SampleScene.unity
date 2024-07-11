@@ -5650,6 +5650,9 @@ MonoBehaviour:
   - {fileID: 33385708, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: -1756903337, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
   - {fileID: 1070561827, guid: 9a69fa20c2a796344a03569733eb09ab, type: 3}
+  useGradient: 1
+  startColor: {r: 0.74880034, g: 0.94716984, b: 0.94142, a: 1}
+  endColor: {r: 0.90188676, g: 0.6109007, b: 0.72054774, a: 1}
 --- !u!1 &1452757803
 GameObject:
   m_ObjectHideFlags: 0

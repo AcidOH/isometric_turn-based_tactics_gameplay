@@ -18,6 +18,7 @@ public class Cursor : MonoBehaviour
     Overlay overlay;
     Pathfinding pathFinding;
 
+    private GameObject selectedTile;
     private Vector3 selectedTilePos;
 
     void Start()
@@ -36,22 +37,26 @@ public class Cursor : MonoBehaviour
 
         if (hit.collider != null)
         {
+            Debug.Log("hit.collider != null (in Cursor)");
             hitOverlayTile = hit.collider.gameObject;
             hitOverlayTilePos = hit.transform.position;
         }
 
         if (Input.GetMouseButtonDown(0))
         {
+            selectedTile = hitOverlayTile;
             selectedTilePos = hitOverlayTilePos;
             foreach (Node node in overlay.grid)
             {
                 node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
             }
-            SelectTile();
+            //SelectTile();
             playerMovement(hitOverlayTilePos);
         }
 
         pathFinding.FindPath(selectedTilePos, hitOverlayTilePos);
+        if (selectedTile != null) selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+
     }
 
     void OnGUI()
@@ -64,8 +69,6 @@ public class Cursor : MonoBehaviour
     {
         Vector2 mousePos = new Vector2();
 
-        //Get the mouse position from Event
-        //The y position from Event is inverted
         mousePos.x = _currentEvent.mousePosition.x;
         mousePos.y = cam.pixelHeight - _currentEvent.mousePosition.y;
 
@@ -80,17 +83,13 @@ public class Cursor : MonoBehaviour
         GUILayout.EndArea();
     }
 
-    void SelectTile()
-    {
-        hitOverlayTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-
-        //cam.transform.position = new Vector3(hitOverlayTilePos.x, hitOverlayTilePos.y, hitOverlayTilePos.z -10);
-        //^use for beginning of player phase, moveing, selecting someone to attack
-    }
+    //void SelectTile()
+    //{
+        //hitOverlayTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+    //}
     
     void playerMovement(Vector3 _posToMoveTo)
     {
-        player.transform.position = _posToMoveTo; //+ new Vector3Int(0,0,-3);
-        //^this is silly because if you click on the same place twice you move out of the screen by 3 every time -_-
+        player.transform.position = _posToMoveTo;
     }
 }

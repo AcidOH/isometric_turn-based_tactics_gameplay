@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PathIndicator : MonoBehaviour
@@ -8,7 +9,12 @@ public class PathIndicator : MonoBehaviour
     Overlay overlay;
 
     public List<Sprite> arrowSprites;
-    //public bool useGradient;
+
+    [SerializeField]
+    private bool useGradient;
+
+    [SerializeField]
+    private Color startColor, endColor;
 
     void Start()
     {
@@ -76,8 +82,8 @@ public class PathIndicator : MonoBehaviour
     {
         if (overlay.path != null)
         {
-            //if (useGradient != true)
-            //{
+            if (useGradient != true)
+            {
                 for (int i = 0; i < overlay.path.Count - 1; i++)
                 {
                     int currentIndex = i;
@@ -90,7 +96,24 @@ public class PathIndicator : MonoBehaviour
 
                     SetArrowSprite(overlay.path[i], direction);
                 }
-            //}
+            }
+            else 
+            {
+                Gradient gradient = CreateGradient(startColor, endColor, (float)overlay.path.Count -1);
+
+                for (int i = 0; i < overlay.path.Count; i++)
+                {
+                    float numer = (float)i;
+                    float denom = (float)overlay.path.Count;
+
+                    float t = numer / denom; //I don't think theres a way to round to specific number of decimal places D:
+                    
+                    var arrow = overlay.path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
+                    arrow.color = gradient.Evaluate(t);
+
+                    //Debug.Log("Place in path is " + i + ", color is " + arrow.color);
+                }
+            }
         }
     }
 
@@ -98,7 +121,7 @@ public class PathIndicator : MonoBehaviour
     {
         if (overlay.path != null)
         {
-            for (int i = 0; i < overlay.path.Count - 1; i++)
+            for (int i = 0; i < overlay.path.Count; i++)
             {
                 var arrow = overlay.path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
                 arrow.color = new Color(1, 1, 1, 0);
@@ -134,5 +157,22 @@ public class PathIndicator : MonoBehaviour
 
         //arrow.color = new Color(1, 1, 1, 1);
         arrow.sprite = arrowSprites[(int)_direction];
+    }
+
+    private Gradient CreateGradient(Color _startColor, Color _endColor, float pathLength)
+    {   
+        var _gradient = new Gradient();
+        var colors = new GradientColorKey[2];
+        var alphas = new GradientAlphaKey[2];
+        
+        colors[0] = new GradientColorKey(_startColor, 0.0f); //second number is time
+        colors[1] = new GradientColorKey(_endColor, 1.0f);
+
+        alphas[0] = new GradientAlphaKey(1.0f, 0.0f);
+        alphas[1] = new GradientAlphaKey(1.0f, 1.0f);
+
+        _gradient.SetKeys(colors, alphas);
+
+        return _gradient;
     }
 }

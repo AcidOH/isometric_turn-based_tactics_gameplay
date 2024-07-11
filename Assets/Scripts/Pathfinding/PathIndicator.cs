@@ -35,31 +35,31 @@ public class PathIndicator : MonoBehaviour
 
         if (prev == Vector2Int.up) //(below curr, pointing up)
         {
-            if (next == Vector2Int.zero) return ArrowDirection.UpEnd;
             if (next == Vector2Int.up) return ArrowDirection.UpOrDown;
             if (next == Vector2Int.left) return ArrowDirection.BottomLeft;
             if (next == Vector2Int.right) return ArrowDirection.BottomRight;
+            if (next == Vector2Int.zero) return ArrowDirection.UpEnd;
         }
         if (prev == Vector2Int.down)
         {
-            if (next == Vector2Int.zero) return ArrowDirection.DownEnd;
             if (next == Vector2Int.down) return ArrowDirection.UpOrDown;
             if (next == Vector2Int.left) return ArrowDirection.TopLeft;
             if (next == Vector2Int.right) return ArrowDirection.TopRight;
+            if (next == Vector2Int.zero) return ArrowDirection.DownEnd;
         }
         if (prev == Vector2Int.left)
         {
-            if (next == Vector2Int.zero) return ArrowDirection.LeftEnd;
             if (next == Vector2Int.up) return ArrowDirection.TopRight;
             if (next == Vector2Int.down) return ArrowDirection.BottomRight;
             if (next == Vector2Int.left) return ArrowDirection.LeftOrRight;
+            if (next == Vector2Int.zero) return ArrowDirection.LeftEnd;
         }
         if (prev == Vector2Int.right)
         {
-            if (next == Vector2Int.zero) return ArrowDirection.RightEnd;
             if (next == Vector2Int.up) return ArrowDirection.TopLeft;
             if (next == Vector2Int.down) return ArrowDirection.BottomLeft;
             if (next == Vector2Int.right) return ArrowDirection.LeftOrRight;
+            if (next == Vector2Int.zero) return ArrowDirection.RightEnd;
         }
         if (prev == Vector2Int.zero)
         {

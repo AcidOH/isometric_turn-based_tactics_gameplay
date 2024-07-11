@@ -5,18 +5,15 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private Cursor cursor;
-    private GameObject tempPlayerSprite;
     
-    // Start is called before the first frame update
     void Start()
     {
-        
+        cursor = GameObject.Find("Cursor").GetComponentInChildren<Cursor>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector3 posToMoveTo = cursor.GetComponent<Cursor>().hitOverlayTilePos;
+        Vector3 posToMoveTo = cursor.hitOverlayTilePos;
         
         Debug.Log(gameObject.GetInstanceID().ToString());
         Debug.Log(gameObject.name.ToString());

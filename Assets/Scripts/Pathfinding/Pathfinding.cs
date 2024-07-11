@@ -11,21 +11,19 @@ public class Pathfinding : MonoBehaviour
     void Awake()
     {
 	    grid = GetComponent<Overlay>();
-		Debug.Log("grid = GetComponent<Overlay>();");
     }
 
-    void Update()
+    /*void Update()
     {
 	    Debug.Log("seeker: " + seeker.position + ", target: " + target.position);
 		FindPath(seeker.position, target.position);
-    }
+    }*/
 
-    void FindPath(Vector3 startPos, Vector3 targetPos)
+    public void FindPath(Vector3 startPos, Vector3 targetPos)
     {
-		Debug.Log("FindPath is called");
-		Debug.Log("startPos: " + startPos + ", targetPos: " + targetPos);
-
-		Node startNode = grid.NodeFromWorldPoint(startPos);
+        //Debug.Log("startPos = " + startPos + ", targetPos = " + targetPos);
+        
+        Node startNode = grid.NodeFromWorldPoint(startPos);
 	    Node targetNode = grid.NodeFromWorldPoint(targetPos);
 	
         Heap<Node> openSet = new Heap<Node>(grid.maxHeapSize);

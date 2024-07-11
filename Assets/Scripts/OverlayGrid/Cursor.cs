@@ -5,12 +5,20 @@ using UnityEngine;
 public class Cursor : MonoBehaviour
 {
     private Camera cam;
-    private Vector2 direction; 
+    private Vector2 direction;
+
+    [HideInInspector]
     public GameObject hitOverlayTile;
+
+    [HideInInspector]
     public Vector3 hitOverlayTilePos;
+    
     public GameObject player;
 
     Overlay overlay;
+    Pathfinding pathFinding;
+
+    private Vector3 selectedTilePos;
 
     void Start()
     {
@@ -18,6 +26,7 @@ public class Cursor : MonoBehaviour
         Debug.Log("Camera height: " + cam.pixelHeight + ", width: " + cam.pixelWidth);
 
         overlay = GameObject.Find("A*").GetComponentInChildren<Overlay>();
+        pathFinding = GameObject.Find("A*").GetComponentInChildren<Pathfinding>();
     }
 
     void Update()
@@ -30,21 +39,25 @@ public class Cursor : MonoBehaviour
             hitOverlayTile = hit.collider.gameObject;
             hitOverlayTilePos = hit.transform.position;
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            selectedTilePos = hitOverlayTilePos;
+            foreach (Node node in overlay.grid)
+            {
+                node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
+            }
+            SelectTile();
+            playerMovement(hitOverlayTilePos);
+        }
+
+        pathFinding.FindPath(selectedTilePos, hitOverlayTilePos);
     }
 
     void OnGUI()
     {
         Event currentEvent = Event.current;
         MoveMouse(currentEvent);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            foreach (Node node in overlay.grid)
-            {
-                node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
-            }
-            SelectTile();
-        }
     }
 
     void MoveMouse(Event _currentEvent)
@@ -69,20 +82,15 @@ public class Cursor : MonoBehaviour
 
     void SelectTile()
     {
-        if (hitOverlayTile.GetComponent<SpriteRenderer>().color != new Color(1, 1, 1, 1))
-        {
-            hitOverlayTile.GetComponent<IndividualTiles>().ShowTile();
+        hitOverlayTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
-            //cam.transform.position = new Vector3(hitOverlayTilePos.x, hitOverlayTilePos.y, hitOverlayTilePos.z -10);
-            //^use for beginning of player phase, moveing, selecting someone to attack
-
-            playerMovement(hitOverlayTilePos);
-        }
+        //cam.transform.position = new Vector3(hitOverlayTilePos.x, hitOverlayTilePos.y, hitOverlayTilePos.z -10);
+        //^use for beginning of player phase, moveing, selecting someone to attack
     }
     
     void playerMovement(Vector3 _posToMoveTo)
     {
         player.transform.position = _posToMoveTo + new Vector3Int(0,0,-3);
-        //^ -3 is an arbitrary number that only works if there aren't any tiles closer than -3.
+        //^this is silly because if you click on the same place twice you move out of the screen by 3 every time -_-
     }
 }

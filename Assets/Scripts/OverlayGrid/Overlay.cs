@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 //using UnityEngine.Timeline;
@@ -29,6 +30,7 @@ public class Overlay : MonoBehaviour
     public List<Node> path;
 
     PathIndicator pathIndicator;
+    Cursor cursor;
 
     public List<Sprite> arrowSprites;
 
@@ -53,7 +55,8 @@ public class Overlay : MonoBehaviour
     void Start()
     {
         pathIndicator = GetComponent<PathIndicator>();
-        
+        cursor = GameObject.Find("Cursor").GetComponentInChildren<Cursor>();
+
         //tilesGridandWorldPos = new Dictionary<Vector3Int, Vector3>();
         nodeAndTileInfo = new List<(Vector3Int, Vector3, GameObject)> ();
 
@@ -179,55 +182,94 @@ public class Overlay : MonoBehaviour
 	    return neighbours;
     }
 
-    public Node NodeFromWorldPoint(Vector3 targetWorldPosition) //can get world point from raycast in from Cursor script
+    public Node NodeFromWorldPoint(Vector3 targetWorldPosition)
     {
-		Debug.Log("NodeFromWorldPoint was called");
-        Debug.Log("targetWorldPosition: " + targetWorldPosition);
+        //(you previously used raycast the same way as in Cursor script to find the node)
+        //(only works if targetWorldPosition is snapped into the grid (which should be the case))
         
-        //THIS IS BORROWED FROM CURSOR SCRIPT! (You need to turn it into a function that you can reuse)
-        RaycastHit2D hit = Physics2D.Raycast(targetWorldPosition, Vector2.zero);
-
-        Debug.Log("Raycast hit: " + hit);
-
-        if (hit.collider != null)
+        foreach (var overlayTilePos in nodeAndTileInfo)
         {
-            Debug.Log("hit.collider != null");
-            GameObject hitOverlayTile = hit.collider.gameObject;
-            Vector3 hitOverlayTilePos = hit.transform.position;
-
-            if (nodeAndTileInfo != null)
+            if (overlayTilePos.Item2 == targetWorldPosition)
             {
-                Debug.Log("tilesGridandWorldPos != null");
-                foreach (var overlayTilePos in nodeAndTileInfo)
-                {
-                    Debug.Log("In foreach loop");
-                    if (hitOverlayTilePos == overlayTilePos.Item2)
-                    {
-                        Debug.Log("hitOverlayTilePos is in overlayWorldGrid");
-                        int x = overlayTilePos.Item1.x;
-                        int y = overlayTilePos.Item1.y;
+                int x = overlayTilePos.Item1.x;
+                int y = overlayTilePos.Item1.y;
 
-                        Debug.Log("int x and int y were set. " + x + ", " + y);
-
-                        return grid[x, y];
-                    }
-                }
-            } else
-            {
-                Debug.Log("tilesGridandWorldPos = null");
+                return grid[x, y];
             }
-			
-			//int index = overlayWorldGrid.IndexOf(hitOverlayTilePos); //returns -1
-			//Debug.Log("Index of hitOverlayTilePos in overlayWorldGrid: " + index);
-		
-			/*int x = overlayGrid[index].x;
-			int y = overlayGrid[index].y;
-	
-        	return grid[x,y];*/
+        }
+        return null;
+    }
+
+    public void DrawPath()
+    {
+        if (path != null)
+        {
+            for (int i = 0; i < path.Count-1; i++)
+            {
+                int currentIndex = i;
+
+                var arrow = path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
+                arrow.color = new Color(1, 1, 1, 1);
+
+                (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
+                PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
+
+                SetArrowSprite(path[i], direction);
+            }
+        }
+    }
+
+    public void ErasePath()
+    {
+        if (path != null)
+        {
+            for (int i = 0; i < path.Count-1; i++)
+            {
+                var arrow = path[i].overlayTile.GetComponentInChildren<SpriteRenderer>();
+                arrow.color = new Color(1, 1, 1, 0);
+                arrow.sprite = arrowSprites[0];
+            }
+        }
+    }
+
+    private (Vector2Int,Vector2Int) GetPrevAndNextNode(int i)
+    {
+        Vector2Int curr = new Vector2Int(path[i].gridX, path[i].gridY);
+        int h = i - 1;
+        int j = i + 1;
+
+        if (i == 0)
+        {
+            h = 0;
+        }
+        else if (i == path.Count - 2)
+        {
+            j = path.Count - 2;
         }
 
-        Debug.Log("hit.collider = null");
-		return null;
+        Vector2Int prev = curr - new Vector2Int(path[h].gridX, path[h].gridY);
+        Vector2Int next = new Vector2Int(path[j].gridX, path[j].gridY) - curr;
+
+        return (prev, next);
+    }
+
+    private void SetArrowSprite(Node _node, PathIndicator.ArrowDirection _direction)
+    {
+        var arrow = _node.overlayTile.GetComponentInChildren<SpriteRenderer>();
+
+        //arrow.color = new Color(1, 1, 1, 1);
+        arrow.sprite = arrowSprites[(int)_direction];
+
+        /*if (_direction == PathIndicator.ArrowDirection.None)
+        {
+            arrow.color = new Color(1, 1, 1, 0);
+        }
+        else
+        {
+            arrow.color = new Color(1, 1, 1, 1);
+            arrow.sprite = arrowSprites[(int)_direction];
+            //arrow.sortingOrder = 1; //it can be the same sorting layer as the overlaytiles (since it is technically an overlaytile)
+        }*/
     }
 
     /*void OnDrawGizmos()
@@ -250,71 +292,4 @@ public class Overlay : MonoBehaviour
 		    }
         }
     }*/
-
-    public void DrawPath()
-    {
-        if (path != null)
-        {
-            foreach (Node node in path)
-            {
-                int currentIndex = path.IndexOf(node);
-
-                (Vector2Int, Vector2Int) prevAndnext = GetPrevAndNextNode(currentIndex);
-
-                PathIndicator.ArrowDirection direction = pathIndicator.TranslateDirection(prevAndnext.Item1, prevAndnext.Item2);
-                Debug.Log("ArrowDirection direction = " +  direction);
-                SetArrowSprite(node, direction);
-            }
-        }
-    }
-
-    public void ErasePath()
-    {
-        if (path != null)
-        {
-            foreach (Node node in path)
-            {
-                var arrow = node.overlayTile.GetComponentInChildren<SpriteRenderer>();
-                arrow.color = new Color(1, 1, 1, 0);
-                arrow.sprite = arrowSprites[0];
-            }
-        }
-    }
-
-    private (Vector2Int,Vector2Int) GetPrevAndNextNode(int i)
-    {
-        Vector2Int curr = new Vector2Int(path[i].gridX, path[i].gridY);
-        int h = i - 1;
-        int j = i + 1;
-
-        if (i == 0)
-        {
-            h = 0;
-        }
-        else if (i == path.Count - 1)
-        {
-            j = path.Count - 1;
-        }
-
-        Vector2Int prev = curr - new Vector2Int(path[h].gridX, path[h].gridY);
-        Vector2Int next = new Vector2Int(path[j].gridX, path[j].gridY) - curr;
-
-        return (prev, next);
-    }
-
-    private void SetArrowSprite(Node _node, PathIndicator.ArrowDirection _direction)
-    {
-        var arrow = _node.overlayTile.GetComponentInChildren<SpriteRenderer>();
-
-        if (_direction == PathIndicator.ArrowDirection.None)
-        {
-            arrow.color = new Color(1, 1, 1, 0);
-        }
-        else
-        {
-            arrow.color = new Color(1, 1, 1, 1);
-            arrow.sprite = arrowSprites[(int)_direction];
-            //arrow.sortingOrder = 1; //it can be the same sorting layer as the overlaytiles (since it is technically an overlaytile)
-        }
-    }
 }

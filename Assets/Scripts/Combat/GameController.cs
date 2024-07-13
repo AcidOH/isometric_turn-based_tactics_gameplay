@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour
 
     public TextMeshProUGUI battleText; //from Fighter Stats, shows damage done
 
+    public TextMeshProUGUI doesCrit; //set in Attack Script
+
     private void Awake()
     {
         battleMenu = GameObject.Find("ActionMenu");
@@ -40,6 +42,8 @@ public class GameController : MonoBehaviour
     public void NextTurn() //calls itself in a loop unless a character dies
     {
         battleText.gameObject.SetActive(false);
+        doesCrit.gameObject.SetActive(false);
+
         FighterStats currentFighterStats = fighterStats[0];
         fighterStats.Remove(currentFighterStats);
         if (!currentFighterStats.GetDead())
@@ -55,7 +59,8 @@ public class GameController : MonoBehaviour
             else
             {
                 this.battleMenu.SetActive(false);
-                string attackType = Random.Range(0, 2) == 1 ? "melee" : "range";
+                //string attackType = Random.Range(0, 2) == 1 ? "melee" : "range";
+                string attackType = "melee";
                 currentUnit.GetComponent<FighterAction>().SelectAttack(attackType);
             }
         }

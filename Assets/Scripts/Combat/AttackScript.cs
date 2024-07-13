@@ -27,42 +27,70 @@ public class AttackScript : MonoBehaviour
 
     private FighterStats attackerStats;
     private FighterStats targetStats;
-    private float damage = 0.0f;
-    private bool critHit = false;
+
+    private float damage;
+    private GameObject GameControllerObj;
+    
+    public float damageBeforeCrit = 0.0f;
+    public float chanceToHit = 0.0f;
+    public float critChance = 0.0f;
+
+    void Start()
+    {
+        GameControllerObj = GameObject.Find("GameControllerObject");
+    }
+
 
     public void Attack(GameObject victim) //called in Fighter Action
     {
         attackerStats = owner.GetComponent<FighterStats>(); 
         targetStats = victim.GetComponent<FighterStats>(); // victim is the thing being attacked
+
+        int numOfAttacks = 0;
+
         if (attackerStats.energy >= energyCost) //checks for enough mana
         {
-            float chanceToHit = attackerStats.hit / targetStats.hit;
-            bool doesHit = HitFromPercent(chanceToHit);
-            if (doesHit == true)
+            float hits = targetStats.hit;
+
+            while (hits > 0)
             {
-                //if you want to include modifiers, do so here.
+                numOfAttacks++;
 
-                damage = attackerStats.melee + attackerStats.skill - targetStats.defence;
-
-                float crit = attackerStats.skill / targetStats.skill;
-                critHit = HitFromPercent(crit);
-
-                if (critHit == true)
+                chanceToHit = attackerStats.hit / targetStats.hit; //could be hits instead of targetstats if it does too much damage
+                bool doesHit = HitFromPercent(chanceToHit);
+                if (doesHit == true)
                 {
-                    float critDamage = Mathf.Round(damage * crit);
-                    damage = damage + critDamage;
+                    //if you want to include modifiers, do so here.
 
-                    Debug.Log("Critical hit! Extra damage done: " + critDamage);
+                    damageBeforeCrit = attackerStats.melee + attackerStats.skill - targetStats.defence;
+
+                    critChance = attackerStats.skill / targetStats.skill > 1 ? 1 : attackerStats.skill / targetStats.skill;
+                    bool critHit = HitFromPercent(critChance);
+
+                    if (critHit == true)
+                    {
+                        float critDamage = Mathf.Round(damageBeforeCrit * critChance);
+                        damage = damageBeforeCrit + critDamage;
+
+                        GameControllerObj.GetComponent<GameController>().doesCrit.gameObject.SetActive(true);
+
+                        Debug.Log("Critical hit! Extra damage done: " + critDamage);
+                    }
                 }
-            }
-            else
-            {
-                damage = 0.0f;
+                else
+                {
+                    damageBeforeCrit = 0.0f;
+                }
+
+                //owner.GetComponent<Animator>().Play(animationName);
+                targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
+                attackerStats.updateEnergyFill(energyCost);
+
+
+                hits = attackerStats.hit - targetStats.hit - hits;
             }
 
-            //owner.GetComponent<Animator>().Play(animationName);
-            targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
-            attackerStats.updateEnergyFill(energyCost);
+            owner.GetComponentInChildren<StatTextController>().numOfAttacks.text = "x" + numOfAttacks.ToString();
         }
         else
         {

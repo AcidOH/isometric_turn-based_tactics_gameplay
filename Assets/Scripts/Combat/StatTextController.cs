@@ -46,11 +46,7 @@ public class StatTextController : MonoBehaviour
 
         startEnergy = fighterStats.energy;
         energy = startEnergy;
-
-        toHit = attackStats.chanceToHit;
-        toCrit = attackStats.critChance;
-        damage = attackStats.damageBeforeCrit;
-
+        
         exp.text = experience.ToString();
         hp.text = health.ToString();
         eng.text = energy.ToString();
@@ -77,21 +73,6 @@ public class StatTextController : MonoBehaviour
         {
             energy = fighterStats.energy;
             eng.text = energy.ToString() + "/" + startEnergy.ToString();
-        }
-        if (toHit != attackStats.chanceToHit)
-        {
-            toHit = attackStats.chanceToHit;
-            hit.text = (Mathf.RoundToInt(toHit*100)).ToString() + "%";
-        }
-        if (toCrit != attackStats.critChance)
-        {
-            toCrit = attackStats.critChance;
-            crit.text = (Mathf.RoundToInt(toCrit*100)).ToString() + "%";
-        }
-        if (damage != attackStats.damageBeforeCrit)
-        {
-            damage = attackStats.critChance;
-            dmg.text = damage.ToString();
         }
     }
 }

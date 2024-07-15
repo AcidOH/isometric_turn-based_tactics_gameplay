@@ -11,9 +11,6 @@ public class FighterAction : MonoBehaviour
     [SerializeField]
     private GameObject meleePrefab;
 
-    [SerializeField]
-    private GameObject rangePrefab;
-
     //[SerializeField]
     //private Sprite faceIcon;
 
@@ -40,7 +37,6 @@ public class FighterAction : MonoBehaviour
         else if (btn.CompareTo("range") == 0)
         {
             Debug.Log(victim + " was hit by range attack!");
-            //rangePrefab.GetComponent<AttackScript>().Attack(victim);
         }
         else
         {

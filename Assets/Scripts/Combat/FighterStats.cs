@@ -25,12 +25,6 @@ public class FighterStats : MonoBehaviour, IComparable
     public float energy; //(previous the "magic" stat)
     public float melee; //a placeholder stat for an attack's inherent damage
 
-    [HideInInspector]
-    public float hit;
-
-    [HideInInspector]
-    public int movement;
-
     private float startHealth;
     private float startEnergy;
 
@@ -63,25 +57,17 @@ public class FighterStats : MonoBehaviour, IComparable
         startEnergy = energy;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
-
-        hit = speed + skill;
-        movement = Mathf.CeilToInt(speed / 2);
     }
 
     public void ReceiveDamage(float damage) //called in Attack Script (Attack)
     {
         health = health - damage;
-        Debug.Log("Damage = " + damage);
-        Debug.Log("New health: " + health);
         //animator.Play("Damage");
-
-        // Set damage text
 
         if (health <= 0)
         {
             dead = true;
             gameObject.tag = "Dead";
-            Debug.Log("Someone died.");
 
             Destroy(healthFill);
             Destroy(gameObject);

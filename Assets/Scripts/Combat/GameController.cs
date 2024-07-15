@@ -14,8 +14,6 @@ public class GameController : MonoBehaviour
 
     public TextMeshProUGUI battleText; //from Fighter Stats, shows damage done
 
-    public TextMeshProUGUI doesCrit; //set in Attack Script
-
     private void Awake()
     {
         battleMenu = GameObject.Find("ActionMenu");
@@ -23,6 +21,7 @@ public class GameController : MonoBehaviour
     void Start() //adds turn speed to list, sorts to determine turn order
     {
         fighterStats = new List<FighterStats>();
+        
         GameObject hero = GameObject.FindGameObjectWithTag("Hero");
         FighterStats currentFighterStats = hero.GetComponent<FighterStats>();
         currentFighterStats.CalculateNextTurn(0);
@@ -42,8 +41,7 @@ public class GameController : MonoBehaviour
     public void NextTurn() //calls itself in a loop unless a character dies
     {
         battleText.gameObject.SetActive(false);
-        doesCrit.gameObject.SetActive(false);
-
+        
         FighterStats currentFighterStats = fighterStats[0];
         fighterStats.Remove(currentFighterStats);
         if (!currentFighterStats.GetDead())

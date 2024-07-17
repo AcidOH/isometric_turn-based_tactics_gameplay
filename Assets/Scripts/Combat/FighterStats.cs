@@ -6,6 +6,9 @@ using System;
 
 public class FighterStats : MonoBehaviour, IComparable
 {
+    [SerializeField]
+    private GameObject owner;
+
     //[SerializeField]
     //private Animator animator;
 
@@ -14,19 +17,6 @@ public class FighterStats : MonoBehaviour, IComparable
 
     [SerializeField]
     private GameObject energyFill;
-
-    [Header("Stats")]
-    public float experience;
-    public float health;
-    public float defence;
-    public float resistance;
-    public float speed;
-    public float skill;
-    public float energy; //(previous the "magic" stat)
-    public float melee; //a placeholder stat for an attack's inherent damage
-
-    private float startHealth;
-    private float startEnergy;
 
     [HideInInspector]
     public int nextActTurn; //defined in CalculateNextTurn
@@ -45,6 +35,10 @@ public class FighterStats : MonoBehaviour, IComparable
 
     private GameObject GameControllerObj;
 
+    private float health;
+    private float energy;
+
+
     void Awake()
     {
         healthTransform = healthFill.GetComponent<RectTransform>();
@@ -53,8 +47,12 @@ public class FighterStats : MonoBehaviour, IComparable
         energyTransform = energyFill.GetComponent<RectTransform>();
         energyScale = energyFill.transform.localScale;
 
-        startHealth = health;
-        startEnergy = energy;
+        HumanEntity humanentity = owner.GetComponent<HumanEntity>();
+        HumanData humandata = owner.GetComponent<HumanEntity>().HumanData;
+        CharacterStat characterstathealth = owner.GetComponent<HumanEntity>().HumanData.healthPoints;
+
+        health = owner.GetComponent<HumanEntity>().HumanData.healthPoints.BaseValue;
+        energy = owner.GetComponent<HumanEntity>().HumanData.energy.BaseValue;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
     }
@@ -74,7 +72,7 @@ public class FighterStats : MonoBehaviour, IComparable
         }
         else if (damage > 0)
         {
-            xNewHealthScale = healthScale.x * (health / startHealth);
+            xNewHealthScale = healthScale.x * (health / owner.GetComponent<HumanEntity>().HumanData.healthPoints.BaseValue);
             healthFill.transform.localScale = new Vector2(xNewHealthScale, healthScale.y);
         }
         if (damage > 0) //for battleText, could be part of previous else if
@@ -90,7 +88,7 @@ public class FighterStats : MonoBehaviour, IComparable
         if (cost > 0) //only for the energy fill: there's already a check for enough energy left in Attack Script
         {
             energy = energy - cost;
-            xNewEnergyScale = energyScale.x * (energy / startEnergy);
+            xNewEnergyScale = energyScale.x * (energy / owner.GetComponent<HumanEntity>().HumanData.energy.BaseValue);
             energyFill.transform.localScale = new Vector2(xNewEnergyScale, energyScale.y);
         }
     }
@@ -106,7 +104,7 @@ public class FighterStats : MonoBehaviour, IComparable
     }
     public void CalculateNextTurn(int currentTurn) //called in Game Controller
     {
-        nextActTurn = currentTurn + Mathf.CeilToInt(100f / speed);
+        nextActTurn = currentTurn + Mathf.CeilToInt(100f / owner.GetComponent<HumanEntity>().HumanData.speed.Value);
     }
 
     public int CompareTo(object otherStats) //be mindful that both the fcn and the method are called CompareTo

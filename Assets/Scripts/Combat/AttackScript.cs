@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class AttackScript : MonoBehaviour
 {
-    public GameObject owner;
+    [SerializeField]
+    private GameObject owner;
 
     //[SerializeField]
     //private string animationName;
@@ -16,12 +17,18 @@ public class AttackScript : MonoBehaviour
     private HumanData attackerStats;
     private HumanData targetStats;
 
+    private FighterStats attackerFighterStats;
+    private FighterStats targetFighterStats;
+
     private float damage;
 
     public void Attack(GameObject victim) //called in Fighter Action
     {
         attackerStats = owner.GetComponent<HumanEntity>().HumanData; 
         targetStats = victim.GetComponent<HumanEntity>().HumanData; // victim is the thing being attacked
+
+        attackerFighterStats = owner.GetComponent<FighterStats>();
+        targetFighterStats = victim.GetComponent<FighterStats>();
 
         if (attackerStats.energy.Value >= energyCost) //checks for enough mana
         {
@@ -35,8 +42,8 @@ public class AttackScript : MonoBehaviour
             }
 
             //owner.GetComponent<Animator>().Play(animationName);
-            //targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
-            //attackerStats.updateEnergyFill(energyCost);
+            targetFighterStats.ReceiveDamage(Mathf.CeilToInt(damage));
+            attackerFighterStats.updateEnergyFill(energyCost);
         }
         else
         {

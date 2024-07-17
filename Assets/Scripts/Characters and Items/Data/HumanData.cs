@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class HumanData : ScriptableObject
+[CreateAssetMenu(fileName = "new HumanData", menuName = "Data/HumanData")]
+
+public class HumanData : ScriptableObject
 {
     //borrowing fe3h stat system for the timebeing -- will change it though
     public CharacterStat healthPoints;

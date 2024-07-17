@@ -9,7 +9,7 @@ public class HumanEntity : Entity
 
     [SerializeField]
     private HumanData _humanData;
-
+    
     //description elements
     private string _professionName;
     private string _professionDescription;

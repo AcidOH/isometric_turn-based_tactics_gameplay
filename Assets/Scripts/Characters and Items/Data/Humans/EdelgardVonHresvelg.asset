@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ffd10358aac8ac46877b71349638846, type: 3}
+  m_Name: EdelgardVonHresvelg
+  m_EditorClassIdentifier: 
+  healthPoints:
+    BaseValue: 29
+  movement:
+    BaseValue: 4
+  strength:
+    BaseValue: 13
+  magic:
+    BaseValue: 6
+  dexterity:
+    BaseValue: 5
+  speed:
+    BaseValue: 8
+  luck:
+    BaseValue: 5
+  defence:
+    BaseValue: 6
+  resistance:
+    BaseValue: 4
+  charm:
+    BaseValue: 10
+  energy:
+    BaseValue: 15

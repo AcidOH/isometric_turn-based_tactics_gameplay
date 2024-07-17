@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ffd10358aac8ac46877b71349638846, type: 3}
+  m_Name: FerdinandVonAegir
+  m_EditorClassIdentifier: 
+  healthPoints:
+    BaseValue: 28
+  movement:
+    BaseValue: 5
+  strength:
+    BaseValue: 8
+  magic:
+    BaseValue: 5
+  dexterity:
+    BaseValue: 6
+  speed:
+    BaseValue: 8
+  luck:
+    BaseValue: 6
+  defence:
+    BaseValue: 6
+  resistance:
+    BaseValue: 2
+  charm:
+    BaseValue: 7
+  energy:
+    BaseValue: 14

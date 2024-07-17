@@ -356,16 +356,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a702d4e6cdc7dbb4ea3985249eb20555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 78398688}
   healthFill: {fileID: 355384885}
   energyFill: {fileID: 1975529618}
-  experience: 25
-  health: 50
-  defence: 2
-  resistance: 6
-  speed: 9
-  skill: 1
-  energy: 20
-  melee: 10
   nextActTurn: 0
 --- !u!114 &78398694
 MonoBehaviour:
@@ -394,8 +387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Red Circle
   _age: 0
-  _professionData: {fileID: 0}
-  _humanData: {fileID: 0}
+  _professionData: {fileID: 11400000, guid: 884bc63d5871d0441af9d2fb584373e9, type: 2}
+  _humanData: {fileID: 11400000, guid: 7caed893d9d95e843b54229f5c37a482, type: 2}
 --- !u!1 &81686426
 GameObject:
   m_ObjectHideFlags: 0
@@ -12345,16 +12338,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a702d4e6cdc7dbb4ea3985249eb20555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 259148323}
   healthFill: {fileID: 81686426}
   energyFill: {fileID: 962394508}
-  experience: 20
-  health: 65
-  defence: 7
-  resistance: 2
-  speed: 4
-  skill: 1
-  energy: 20
-  melee: 5
   nextActTurn: 0
 --- !u!114 &1975402309
 MonoBehaviour:
@@ -12383,8 +12369,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Orange Tile
   _age: 2
-  _professionData: {fileID: 0}
-  _humanData: {fileID: 0}
+  _professionData: {fileID: 11400000, guid: 884bc63d5871d0441af9d2fb584373e9, type: 2}
+  _humanData: {fileID: 11400000, guid: 9bad73456bd814c4399c5d23fbd0d773, type: 2}
 --- !u!1 &1975529618
 GameObject:
   m_ObjectHideFlags: 0

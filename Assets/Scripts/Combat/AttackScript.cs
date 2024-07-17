@@ -13,23 +13,30 @@ public class AttackScript : MonoBehaviour
     [SerializeField]
     private float energyCost;
 
-    private FighterStats attackerStats;
-    private FighterStats targetStats;
+    private HumanData attackerStats;
+    private HumanData targetStats;
 
     private float damage;
 
     public void Attack(GameObject victim) //called in Fighter Action
     {
-        attackerStats = owner.GetComponent<FighterStats>(); 
-        targetStats = victim.GetComponent<FighterStats>(); // victim is the thing being attacked
+        attackerStats = owner.GetComponent<HumanEntity>().HumanData; 
+        targetStats = victim.GetComponent<HumanEntity>().HumanData; // victim is the thing being attacked
 
-        if (attackerStats.energy >= energyCost) //checks for enough mana
+        if (attackerStats.energy.Value >= energyCost) //checks for enough mana
         {
-            damage = attackerStats.melee;
+            if (owner.GetComponent<ItemEntity>() != null && owner.GetComponent<ItemEntity>().ItemData.itemType.ToString() == "MagicWeapon")
+            {
+                damage = attackerStats.attackMagic.Value - targetStats.resilience.Value;
+            }
+            else
+            {
+                damage = attackerStats.attackNonMagic.Value - targetStats.protect.Value;
+            }
 
             //owner.GetComponent<Animator>().Play(animationName);
-            targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
-            attackerStats.updateEnergyFill(energyCost);
+            //targetStats.ReceiveDamage(Mathf.CeilToInt(damage));
+            //attackerStats.updateEnergyFill(energyCost);
         }
         else
         {

@@ -16,6 +16,7 @@ public abstract class HumanData : ScriptableObject
     public CharacterStat defence;
     public CharacterStat resistance;
     public CharacterStat charm;
+    public CharacterStat energy;
 
     //anything that comes from an item or the target is added as a modifier
     public CharacterStat attackNonMagic { get { return strength; } } //add item's might

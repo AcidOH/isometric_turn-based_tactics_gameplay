@@ -18,6 +18,7 @@ public abstract class ItemData : ScriptableObject
     public CharacterStat weight;
     public CharacterStat defence;
     public CharacterStat resistance;
+    public CharacterStat cost;
 
     public enum ItemTypes
     {

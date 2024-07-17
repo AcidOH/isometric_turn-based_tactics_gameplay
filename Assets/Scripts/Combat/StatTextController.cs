@@ -1,78 +1,51 @@
 using TMPro;
 using UnityEngine;
 
-public class StatTextController : MonoBehaviour
+public class StatTextController : ScriptableObject
 {
-    public GameObject owner;
-
-    private FighterStats fighterStats;
+    private GameObject heroStatDisplay;
+    private GameObject enemyStatDisplay;
+    
+    private HumanData fighterStats;
     private AttackScript attackStats;
 
-    public TextMeshProUGUI exp;
+    //public TextMeshProUGUI exp;
     public TextMeshProUGUI hp;
     public TextMeshProUGUI eng;
 
     public TextMeshProUGUI def;
     public TextMeshProUGUI res;
     public TextMeshProUGUI spd;
-    public TextMeshProUGUI skl;
+    //public TextMeshProUGUI skl;
 
-    public TextMeshProUGUI hit;
-    public TextMeshProUGUI dmg;
-    public TextMeshProUGUI crit;
+    //public TextMeshProUGUI hit;
+    //public TextMeshProUGUI dmg;
+    //public TextMeshProUGUI crit;
 
-    private float startHealth;
-    private float startEnergy;
+    //public TextMeshProUGUI numOfAttacks; //set in Attack Script
 
-    private float experience;
-    private float health;
-    private float energy;
-
-    private float toHit;
-    private float toCrit;
-    private float damage;
-
-    public TextMeshProUGUI numOfAttacks; //set in Attack Script
-
-    void Start()
+    public void ShowStatDisplay()
     {
-        fighterStats = owner.GetComponent<FighterStats>();
+        GameObject.Find("HeadsUpCanvas").transform.GetChild(6).gameObject.SetActive(true); //GetChild asks for the index of the child in an array of children
+    }
+    public void HideStatDisplay()
+    {
+        GameObject.Find("HeadsUpCanvas").transform.GetChild(6).gameObject.SetActive(false);
+    }
+
+    public void UpdateTextInStatDisplay(GameObject owner)
+    {
+        fighterStats = owner.GetComponent<HumanEntity>().HumanData;
         attackStats = owner.GetComponentInChildren<AttackScript>();
 
-        experience = fighterStats.experience;
+        //exp.text = fighterStats.experience.Value.ToString();
+        hp.text = fighterStats.healthPoints.Value.ToString();
+        eng.text = fighterStats.energy.Value.ToString();
 
-        startHealth = fighterStats.health;
-        health = startHealth;
-
-        startEnergy = fighterStats.energy;
-        energy = startEnergy;
-        
-        exp.text = experience.ToString();
-        hp.text = health.ToString();
-        eng.text = energy.ToString();
-
-        def.text = fighterStats.defence.ToString();
-        res.text = fighterStats.resistance.ToString();
-        spd.text = fighterStats.speed.ToString();
-        skl.text = fighterStats.skill.ToString();
+        def.text = fighterStats.defence.Value.ToString();
+        res.text = fighterStats.resistance.Value.ToString();
+        spd.text = fighterStats.speed.Value.ToString();
+        //skl.text = fighterStats.skill.Value.ToString();
     }
 
-    void Update()
-    {
-        if (experience != fighterStats.experience)
-        {
-            experience = fighterStats.experience;
-            exp.text = experience.ToString();
-        }
-        if (health != fighterStats.health)
-        {
-            health = fighterStats.health;
-            hp.text = health.ToString() + "/" + startHealth.ToString();
-        }
-        if (energy != fighterStats.energy)
-        {
-            energy = fighterStats.energy;
-            eng.text = energy.ToString() + "/" + startEnergy.ToString();
-        }
-    }
 }

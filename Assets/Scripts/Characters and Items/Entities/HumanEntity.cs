@@ -16,7 +16,7 @@ public class HumanEntity : Entity
 
     //get + set
     public ProfessionData ProfessionData { get { return _professionData; } }
-    public HumanData HumanData { get {return _humanData; } }
+    public HumanData HumanData { get { return _humanData; } }
 
     public void InitializeHumanEntity(string name, int age, EntityData entityData, ProfessionData professionData)
     { 

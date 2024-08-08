@@ -8594,6 +8594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitOverlayTile: {fileID: 0}
   hitOverlayTilePos: {x: 0, y: 0, z: 0}
+  selectedUnit: {fileID: 0}
   player: {fileID: 78398688}
 --- !u!1 &1125506994
 GameObject:
@@ -13771,6 +13772,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
+      propertyPath: m_TagString
+      value: OverlayTileTag
+      objectReference: {fileID: 0}
     - target: {fileID: 8446801205039078949, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13912,6 +13917,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 877832783325854525, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1912935805742524152, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
       propertyPath: m_Enabled
       value: 1

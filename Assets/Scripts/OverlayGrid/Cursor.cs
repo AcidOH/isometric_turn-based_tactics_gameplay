@@ -7,19 +7,27 @@ public class Cursor : MonoBehaviour
     private Camera cam;
     private Vector2 direction;
 
+    private GameObject hitObject;
+
     [HideInInspector]
     public GameObject hitOverlayTile;
 
     [HideInInspector]
     public Vector3 hitOverlayTilePos;
-    
+
     public GameObject player;
 
     private Overlay overlay;
     private Pathfinding pathFinding;
     private FighterStats fighterStats;
 
-    private float playerRangeOfMovement;
+    [HideInInspector]
+    public GameObject selectedUnit;
+
+    [HideInInspector]
+    public bool unitIsSelected = false;
+    
+    private float unitRangeOfMovement;
 
     private GameObject selectedTile;
     private Vector3 selectedTilePos;
@@ -32,7 +40,7 @@ public class Cursor : MonoBehaviour
         overlay = GameObject.Find("A*").GetComponentInChildren<Overlay>();
         pathFinding = GameObject.Find("A*").GetComponentInChildren<Pathfinding>();
         fighterStats = player.GetComponent<FighterStats>();
-        playerRangeOfMovement = player.GetComponent<HumanEntity>().HumanData.movement.Value *10;
+        unitRangeOfMovement = player.GetComponent<HumanEntity>().HumanData.movement.Value *10;
 
     }
 
@@ -43,26 +51,43 @@ public class Cursor : MonoBehaviour
 
         if (hit.collider != null)
         {
-            Debug.Log("hit.collider != null (in Cursor)");
-            hitOverlayTile = hit.collider.gameObject;
+            hitObject = hit.collider.gameObject;
+            
+            hitOverlayTile = hitObject; //the hit object isn't necessarily an overlay tile, but shares the position of the overlay tile beneath it (needs to be able to access that space in order for cursor to go over that area)
             hitOverlayTilePos = hit.transform.position;
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            selectedTile = hitOverlayTile;
-            selectedTilePos = hitOverlayTilePos;
-            foreach (Node node in overlay.grid)
+            if (hitObject.tag == "Hero")
             {
-                node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
+                if (!unitIsSelected)
+                {
+                    selectedUnit = hitObject;
+                    unitIsSelected = true;
+
+                    Debug.Log("A unit is selected.");
+                } 
+                else unitIsSelected = false;
             }
-            //SelectTile();
-            playerMovement(hitOverlayTilePos);
+            else
+            {
+                selectedTile = hitOverlayTile;
+                selectedTilePos = hitOverlayTilePos;
+                foreach (Node node in overlay.grid)
+                {
+                    node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
+                }
+                //SelectTile();
+                playerMovement(hitOverlayTilePos);
+            }
         }
-
-        pathFinding.FindPath(selectedTilePos, hitOverlayTilePos, true, playerRangeOfMovement);
-        if (selectedTile != null) selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-
+        
+        if (selectedTile != null)
+        {
+            pathFinding.FindPath(selectedTilePos, hitOverlayTilePos, true, unitRangeOfMovement);
+            selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        }
     }
 
     void OnGUI()

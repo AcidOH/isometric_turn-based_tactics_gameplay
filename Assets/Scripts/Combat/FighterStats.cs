@@ -38,6 +38,9 @@ public class FighterStats : MonoBehaviour, IComparable
     private float health;
     private float energy;
 
+    private Overlay overlay;
+    private Pathfinding pathfinder;
+
 
     void Awake()
     {
@@ -55,6 +58,9 @@ public class FighterStats : MonoBehaviour, IComparable
         energy = owner.GetComponent<HumanEntity>().HumanData.energy.BaseValue;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
+
+        overlay = GameObject.Find("A*").GetComponent<Overlay>();
+        pathfinder = GameObject.Find("A*").GetComponent<Pathfinding>();
     }
 
     public void ReceiveDamage(float damage) //called in Attack Script (Attack)
@@ -111,6 +117,26 @@ public class FighterStats : MonoBehaviour, IComparable
     {
         int nex = nextActTurn.CompareTo(((FighterStats)otherStats).nextActTurn);
         return nex;
+    }
+
+    public void ShowTilesInRange()
+    {
+        if (overlay.grid != null)
+        {
+            Vector3 origin = owner.transform.position;
+            Node originNode = overlay.NodeFromWorldPoint(origin);
+            
+            float _playerRangeOfMovement = owner.GetComponent<HumanEntity>().HumanData.movement.Value * 10;
+
+            foreach (Node node in overlay.grid)
+            {
+                if (!pathfinder.isInRange(originNode, node, _playerRangeOfMovement))
+                {
+                    node.overlayTile.GetComponent<SpriteRenderer>().color = Color.red;
+                }
+
+            }
+        }
     }
 
 }

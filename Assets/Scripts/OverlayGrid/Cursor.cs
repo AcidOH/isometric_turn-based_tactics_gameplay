@@ -15,8 +15,11 @@ public class Cursor : MonoBehaviour
     
     public GameObject player;
 
-    Overlay overlay;
-    Pathfinding pathFinding;
+    private Overlay overlay;
+    private Pathfinding pathFinding;
+    private FighterStats fighterStats;
+
+    private float playerRangeOfMovement;
 
     private GameObject selectedTile;
     private Vector3 selectedTilePos;
@@ -28,6 +31,9 @@ public class Cursor : MonoBehaviour
 
         overlay = GameObject.Find("A*").GetComponentInChildren<Overlay>();
         pathFinding = GameObject.Find("A*").GetComponentInChildren<Pathfinding>();
+        fighterStats = player.GetComponent<FighterStats>();
+        playerRangeOfMovement = player.GetComponent<HumanEntity>().HumanData.movement.Value *10;
+
     }
 
     void Update()
@@ -54,7 +60,7 @@ public class Cursor : MonoBehaviour
             playerMovement(hitOverlayTilePos);
         }
 
-        pathFinding.FindPath(selectedTilePos, hitOverlayTilePos);
+        pathFinding.FindPath(selectedTilePos, hitOverlayTilePos, true, playerRangeOfMovement);
         if (selectedTile != null) selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
 
     }
@@ -91,5 +97,6 @@ public class Cursor : MonoBehaviour
     void playerMovement(Vector3 _posToMoveTo)
     {
         player.transform.position = _posToMoveTo;
+        fighterStats.ShowTilesInRange();
     }
 }

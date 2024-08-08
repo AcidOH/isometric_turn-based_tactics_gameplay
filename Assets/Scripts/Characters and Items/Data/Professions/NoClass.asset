@@ -15,3 +15,25 @@ MonoBehaviour:
   professionName: NoClass
   professionType: 0
   professionDescription: A class/profession for those who don't have one.
+  healthPoints:
+    BaseValue: 0
+  movement:
+    BaseValue: 0
+  strength:
+    BaseValue: 0
+  magic:
+    BaseValue: 0
+  dexterity:
+    BaseValue: 0
+  speed:
+    BaseValue: 0
+  luck:
+    BaseValue: 0
+  defence:
+    BaseValue: 0
+  resistance:
+    BaseValue: 0
+  charm:
+    BaseValue: 0
+  energy:
+    BaseValue: 0

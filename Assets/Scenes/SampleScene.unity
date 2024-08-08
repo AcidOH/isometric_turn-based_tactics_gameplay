@@ -158,7 +158,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 15}
-  m_SizeDelta: {x: 120, y: 140}
+  m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &10411109
 MonoBehaviour:
@@ -387,7 +387,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Red Circle
   _age: 0
-  _professionData: {fileID: 11400000, guid: 884bc63d5871d0441af9d2fb584373e9, type: 2}
   _humanData: {fileID: 11400000, guid: 7caed893d9d95e843b54229f5c37a482, type: 2}
 --- !u!1 &81686426
 GameObject:
@@ -1438,7 +1437,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &193843735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1484,7 +1483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &256148422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6115,7 +6114,7 @@ PrefabInstance:
       objectReference: {fileID: 259148323}
     - target: {fileID: 254809486541660272, guid: 622820e9ae85021439e0cef1d3f34a7a, type: 3}
       propertyPath: energyCost
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 254809486541660272, guid: 622820e9ae85021439e0cef1d3f34a7a, type: 3}
       propertyPath: maxAttackMultiplier
@@ -8268,7 +8267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1046283159
 Transform:
   m_ObjectHideFlags: 0
@@ -8513,7 +8512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1111310337
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8903,7 +8902,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1181441852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9547,7 +9546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1372622465
 Transform:
   m_ObjectHideFlags: 0
@@ -10983,7 +10982,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 15}
-  m_SizeDelta: {x: 120, y: 140}
+  m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1652994013
 MonoBehaviour:
@@ -12369,7 +12368,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Orange Tile
   _age: 2
-  _professionData: {fileID: 11400000, guid: 884bc63d5871d0441af9d2fb584373e9, type: 2}
   _humanData: {fileID: 11400000, guid: 9bad73456bd814c4399c5d23fbd0d773, type: 2}
 --- !u!1 &1975529618
 GameObject:
@@ -13771,7 +13769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6550250310957209360, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8446801205039078949, guid: 23f8abc751b69214d9b9639b6229af8c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13839,7 +13837,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 254809486541660272, guid: 622820e9ae85021439e0cef1d3f34a7a, type: 3}
       propertyPath: energyCost
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 254809486541660272, guid: 622820e9ae85021439e0cef1d3f34a7a, type: 3}
       propertyPath: maxAttackMultiplier

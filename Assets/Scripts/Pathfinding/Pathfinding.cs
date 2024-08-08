@@ -22,7 +22,7 @@ public class Pathfinding : MonoBehaviour
 		FindPath(seeker.position, target.position);
     }*/
 
-    public void FindPath(Vector3 startPos, Vector3 targetPos)
+    public void FindPath(Vector3 startPos, Vector3 targetPos, bool drawPath, float range)
     {
         //Debug.Log("startPos = " + startPos + ", targetPos = " + targetPos);
         
@@ -34,37 +34,40 @@ public class Pathfinding : MonoBehaviour
 	
         if (startNode != null && targetNode != null)
 		{
-            openSet.Add(startNode);
-
-            while (openSet.Count > 0)
+            if (isInRange(startNode, targetNode, range))
             {
-                Node currentNode = openSet.RemoveFirst();
-                closedSet.Add(currentNode);
+                openSet.Add(startNode);
 
-                if (currentNode == targetNode)
+                while (openSet.Count > 0)
                 {
-                    RetracePath(startNode, targetNode);
-                    return;
-                }
+                    Node currentNode = openSet.RemoveFirst();
+                    closedSet.Add(currentNode);
 
-                foreach (Node neighbour in grid.GetNeighbours(currentNode))
-                {
-                    if (!neighbour.walkable || closedSet.Contains(neighbour))
+                    if (currentNode == targetNode)
                     {
-                        continue;
+                        RetracePath(startNode, targetNode, drawPath);
+                        return;
                     }
 
-                    int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
-
-                    if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
+                    foreach (Node neighbour in grid.GetNeighbours(currentNode))
                     {
-                        neighbour.gCost = newMovementCostToNeighbour;
-                        neighbour.hCost = GetDistance(neighbour, targetNode);
-                        neighbour.parent = currentNode;
-
-                        if (!openSet.Contains(neighbour))
+                        if (!neighbour.walkable || closedSet.Contains(neighbour))
                         {
-                            openSet.Add(neighbour);
+                            continue;
+                        }
+
+                        int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
+
+                        if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
+                        {
+                            neighbour.gCost = newMovementCostToNeighbour;
+                            neighbour.hCost = GetDistance(neighbour, targetNode);
+                            neighbour.parent = currentNode;
+
+                            if (!openSet.Contains(neighbour))
+                            {
+                                openSet.Add(neighbour);
+                            }
                         }
                     }
                 }
@@ -72,14 +75,14 @@ public class Pathfinding : MonoBehaviour
         }
     }   
 
-    void RetracePath(Node startNode, Node endNode)
+    void RetracePath(Node startNode, Node endNode, bool _drawPath)
     {
-        pathIndicator.ErasePath();
+        if (_drawPath) pathIndicator.ErasePath();
         
         List<Node> path = new List<Node>();
 	    Node currentNode = endNode;
 	
-    while(currentNode != startNode)
+        while (currentNode != startNode)
 	    {
 		    path.Add(currentNode);
 		    currentNode = currentNode.parent;
@@ -88,19 +91,36 @@ public class Pathfinding : MonoBehaviour
         path.Reverse();
 	    grid.path = path;
 
-        pathIndicator.DrawPath();
+        if (_drawPath) pathIndicator.DrawPath();
     }
 
-    int GetDistance(Node nodeA, Node nodeB)
+    public bool isInRange(Node startNode, Node endNode, float _range)
+    {
+        if (grid.grid != null)
+        {
+            int originGridX = startNode.gridX;
+            int originGridY = startNode.gridY;
+
+            int nodeGridX = endNode.gridX;
+            int nodeGridY = endNode.gridY;
+
+            int distance = (Mathf.Abs(nodeGridX - originGridX) + Mathf.Abs(nodeGridY - originGridY)) * 10;
+
+            if (distance <= _range) return true;
+        }
+        return false;
+    }
+
+    public int GetDistance(Node nodeA, Node nodeB)
     {
 	    int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
 	    int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
 	
         if (dstX>dstY)
 	    {
-		    return 14*dstY + 10*(dstX-dstY);
-	    }
-	
+            return 14*dstY + 10*(dstX-dstY); //works for neighbouring nodes and when considering diagonal movement (diagonals aren't being considered...)
+        }
+
         return 14*dstX + 10*(dstY-dstX);
     }
 }

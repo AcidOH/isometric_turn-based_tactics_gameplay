@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemData : ScriptableObject
+[CreateAssetMenu(fileName = "new ItemData", menuName = "Data/ItemData")]
+public class ItemData : ScriptableObject
 {
     public string itemName;
     public ItemTypes itemType;
@@ -12,13 +13,13 @@ public abstract class ItemData : ScriptableObject
 
     public StatModifier[] statModifiers;
 
-    public CharacterStat range;
-    public CharacterStat hit;
-    public CharacterStat might;
-    public CharacterStat weight;
-    public CharacterStat defence;
-    public CharacterStat resistance;
-    public CharacterStat cost;
+    public float range;
+    public float hit;
+    public float might;
+    public float weight;
+    public float defence;
+    public float resistance;
+    public float cost;
 
     public enum ItemTypes
     {

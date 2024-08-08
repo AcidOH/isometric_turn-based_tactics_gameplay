@@ -48,4 +48,21 @@ public class StatTextController : ScriptableObject
         //skl.text = fighterStats.skill.Value.ToString();
     }
 
+    /*public void UpdateProfileImage(GameObject owner)
+    {
+        Sprite fighterImage = owner.GetComponent<HumanEntity>().ProfileImage;
+        GameObject ownerInfoUI = GameObject.Find("HeadsUpCanvas").transform.GetChild(3).gameObject;
+
+        if (owner.tag == "Hero")
+        {
+            ownerInfoUI = GameObject.Find("HeadsUpCanvas").transform.GetChild(2).gameObject;
+        }
+        
+        ownerInfoUI.transform.GetChild(0).gameObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().sprite = fighterImage;
+    }*/
+
+    /*public void UpdateCharacterSprite(GameObject owner)
+    {
+        owner.GetComponent<SpriteRenderer>().sprite = owner.GetComponent<HumanEntity>().FullCharacterSprite;
+    }*/
 }

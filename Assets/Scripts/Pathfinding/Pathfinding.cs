@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
@@ -12,7 +13,7 @@ public class Pathfinding : MonoBehaviour
 
     void Awake()
     {
-	    grid = GetComponent<Overlay>();
+        grid = GetComponent<Overlay>();
         pathIndicator = GetComponent<PathIndicator>();
     }
 
@@ -25,15 +26,15 @@ public class Pathfinding : MonoBehaviour
     public void FindPath(Vector3 startPos, Vector3 targetPos, bool drawPath, float range)
     {
         //Debug.Log("startPos = " + startPos + ", targetPos = " + targetPos);
-        
+
         Node startNode = grid.NodeFromWorldPoint(startPos);
-	    Node targetNode = grid.NodeFromWorldPoint(targetPos);
-	
+        Node targetNode = grid.NodeFromWorldPoint(targetPos);
+
         Heap<Node> openSet = new Heap<Node>(grid.maxHeapSize);
-	    HashSet<Node> closedSet = new HashSet<Node>();
-	
+        HashSet<Node> closedSet = new HashSet<Node>();
+
         if (startNode != null && targetNode != null)
-		{
+        {
             if (isInRange(startNode, targetNode, range))
             {
                 openSet.Add(startNode);
@@ -73,25 +74,38 @@ public class Pathfinding : MonoBehaviour
                 }
             }
         }
-    }   
+    }
 
     void RetracePath(Node startNode, Node endNode, bool _drawPath)
     {
         if (_drawPath) pathIndicator.ErasePath();
-        
+
         List<Node> path = new List<Node>();
-	    Node currentNode = endNode;
-	
+        Node currentNode = endNode;
+
         while (currentNode != startNode)
-	    {
-		    path.Add(currentNode);
-		    currentNode = currentNode.parent;
-	    }
-	
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.parent;
+        }
+
         path.Reverse();
-	    grid.path = path;
+        grid.path = path;
 
         if (_drawPath) pathIndicator.DrawPath();
+    }
+
+    public int GetDistance(Node nodeA, Node nodeB)
+    {
+        int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+        int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+
+        if (dstX > dstY)
+        {
+            return 14 * dstY + 10 * (dstX - dstY); //works for neighbouring nodes and when considering diagonal movement (diagonals aren't being considered...)
+        }
+
+        return 14 * dstX + 10 * (dstY - dstX);
     }
 
     public bool isInRange(Node startNode, Node endNode, float _range)
@@ -109,18 +123,5 @@ public class Pathfinding : MonoBehaviour
             if (distance <= _range) return true;
         }
         return false;
-    }
-
-    public int GetDistance(Node nodeA, Node nodeB)
-    {
-	    int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-	    int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
-	
-        if (dstX>dstY)
-	    {
-            return 14*dstY + 10*(dstX-dstY); //works for neighbouring nodes and when considering diagonal movement (diagonals aren't being considered...)
-        }
-
-        return 14*dstX + 10*(dstY-dstX);
     }
 }

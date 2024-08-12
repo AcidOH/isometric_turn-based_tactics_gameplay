@@ -8594,8 +8594,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitOverlayTile: {fileID: 0}
   hitOverlayTilePos: {x: 0, y: 0, z: 0}
-  selectedUnit: {fileID: 0}
   player: {fileID: 78398688}
+  selectedUnit: {fileID: 0}
+  unitIsSelected: 0
 --- !u!1 &1125506994
 GameObject:
   m_ObjectHideFlags: 0
@@ -13927,7 +13928,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3336097919782736417, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3336097919782736417, guid: dd6cb455a70e1b840ae0bb3c49acb96e, type: 3}
       propertyPath: m_LocalPosition.y

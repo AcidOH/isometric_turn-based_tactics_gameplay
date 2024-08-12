@@ -78,7 +78,6 @@ public class Cursor : MonoBehaviour
                 {
                     node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
                 }
-                //SelectTile();
                 playerMovement(hitOverlayTilePos);
             }
         }
@@ -113,15 +112,24 @@ public class Cursor : MonoBehaviour
         GUILayout.Label("World position: " + worldMousePos.ToString("F3"));
         GUILayout.EndArea();
     }
-
-    //void SelectTile()
-    //{
-        //hitOverlayTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-    //}
     
     void playerMovement(Vector3 _posToMoveTo)
     {
-        player.transform.position = _posToMoveTo;
-        fighterStats.ShowTilesInRange();
+        Node startNode = overlay.NodeFromWorldPoint(player.transform.position);
+        Node endNode = overlay.NodeFromWorldPoint(_posToMoveTo);
+
+        bool _isInRange = pathFinding.isInRange(startNode, endNode, unitRangeOfMovement);
+
+        Debug.Log("The tile is in range? " + _isInRange);
+
+        if (_isInRange)
+        {
+            player.transform.position = _posToMoveTo;
+            fighterStats.ShowTilesInRange();
+        }
+        else
+        {
+            Debug.Log("Position to move to is outside of range of movement.");
+        }
     }
 }

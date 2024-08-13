@@ -41,6 +41,10 @@ public class FighterStats : MonoBehaviour, IComparable
     private Overlay overlay;
     private Pathfinding pathfinder;
 
+    public bool isSelectable = true;
+    public bool isSelected = false;
+    public bool hasMoved = false;
+    public bool hasAttacked = false;
 
     void Awake()
     {

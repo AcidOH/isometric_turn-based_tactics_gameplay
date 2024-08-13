@@ -18,17 +18,13 @@ public class MakeButton : MonoBehaviour
 
     private void AttachCallback(string btn)
     {
-        if (btn.CompareTo("MeleeBtn") == 0)
+        if (btn.CompareTo("AttackBtn") == 0)
         {
-            hero.GetComponent<FighterAction>().SelectAttack("melee");
+            hero.GetComponent<FighterAction>().SelectAction("attack");
         }
-        else if (btn.CompareTo("RangeBtn") == 0)
+        else //wait
         {
-            hero.GetComponent<FighterAction>().SelectAttack("range");
-        }
-        else
-        {
-            hero.GetComponent<FighterAction>().SelectAttack("run");
+            hero.GetComponent<FighterAction>().SelectAction("wait");
         }
     } //when button pressed, checks who is attacked in Fighter Action, then calls Attack() in Attack Script
 }

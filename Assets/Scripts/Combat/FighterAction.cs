@@ -16,31 +16,30 @@ public class FighterAction : MonoBehaviour
 
     private GameObject currentAttack;
 
+    private Cursor cursor;
+
     void Awake()
     {
-        hero = GameObject.FindGameObjectWithTag("Hero");
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
+        cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
+        
+        hero = cursor.selectedUnit;
+        enemy = cursor.selectedEnemy;
     }
-    public void SelectAttack(string btn) //called by Make Button
+    public void SelectAction(string btn) //called by Make Button
     {
         GameObject victim = hero;
         if (tag == "Hero")
         {
             victim = enemy;
         }
-        if (btn.CompareTo("melee") == 0)
+        if (btn.CompareTo("attack") == 0)
         {
-            Debug.Log(victim + " was hit by melee attack!");
+            Debug.Log(victim + " was hit by attack!");
             meleePrefab.GetComponent<AttackScript>().Attack(victim);
-
         }
-        else if (btn.CompareTo("range") == 0)
+        else //wait
         {
-            Debug.Log(victim + " was hit by range attack!");
-        }
-        else
-        {
-            Debug.Log("Run");
+            Debug.Log(hero + " waited.");
         }
     }
 }

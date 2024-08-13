@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3129444482477225085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5413281299946627762}
+  - component: {fileID: 254809486541660272}
+  m_Layer: 0
+  m_Name: RedMeleePrefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5413281299946627762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3129444482477225085}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.03392068, y: -0.03392068, z: -8.936792}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3336097919782736417}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &254809486541660272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3129444482477225085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1b4831ed8269944a5b03ecf806d9a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 8928030530772824959}
+  energyCost: 0
 --- !u!1 &8928030530772824959
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,10 +57,12 @@ GameObject:
   - component: {fileID: 3336097919782736417}
   - component: {fileID: 4240928226923660399}
   - component: {fileID: 877832783325854525}
-  - component: {fileID: 1912935805742524152}
+  - component: {fileID: 1268378487740353626}
+  - component: {fileID: 6038212763910236483}
+  - component: {fileID: 1675253386237926581}
   m_Layer: 0
   m_Name: TempPlayerSprite
-  m_TagString: Untagged
+  m_TagString: Hero
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,10 +76,11 @@ Transform:
   m_GameObject: {fileID: 8928030530772824959}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5413281299946627762}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4240928226923660399
@@ -72,8 +121,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 740599753
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 260cef100e1c82a49bc2c8879b824eb1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -121,7 +170,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
+    pivot: {x: 0.5, y: 0.25}
     oldSize: {x: 1, y: 1}
     newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
@@ -135,7 +184,7 @@ PolygonCollider2D:
       - {x: 0.5, y: 0}
       - {x: 0, y: -0.25}
   m_UseDelaunayMesh: 0
---- !u!114 &1912935805742524152
+--- !u!114 &1268378487740353626
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,6 +193,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 8928030530772824959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55de0241131c00b4291aa42c8a2abf8f, type: 3}
+  m_Script: {fileID: 11500000, guid: e11cbf7305242ee40ae4cb9829790021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meleePrefab: {fileID: 3129444482477225085}
+--- !u!114 &6038212763910236483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928030530772824959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a702d4e6cdc7dbb4ea3985249eb20555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 8928030530772824959}
+  healthFill: {fileID: 0}
+  energyFill: {fileID: 0}
+  nextActTurn: 0
+  isSelectable: 1
+  isSelected: 0
+  hasMoved: 0
+  hasAttacked: 0
+--- !u!114 &1675253386237926581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928030530772824959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e2f51670456424ab9544cd7168d404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: Red Circle
+  _age: 0
+  _humanData: {fileID: 11400000, guid: 7caed893d9d95e843b54229f5c37a482, type: 2}

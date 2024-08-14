@@ -28,6 +28,8 @@ public class GameController : MonoBehaviour
     }
     void Start() 
     {
+        this.battleMenu.SetActive(false);
+        
         combatPhases = new List<GameObject[]>();
         fighterStats = new List<FighterStats>();
 
@@ -83,6 +85,23 @@ public class GameController : MonoBehaviour
 
 
         NextTurn();
+    }
+
+    public void CombatTurn()
+    {
+        if (cursor.selectedUnitsFighterStats.isSelected)
+        {
+            //its hero's turn
+            this.battleMenu.SetActive(true);
+            //as part of attack, determine attack order, then set the attacker's has attacked to true.
+            
+        }
+        else
+        {
+            this.battleMenu.SetActive(false);
+            string attackType = "attack";
+            cursor.selectedEnemy.GetComponent<FighterAction>().SelectAction(attackType);
+        }
     }
 
     public void NextTurn() //calls itself in a loop unless a character dies

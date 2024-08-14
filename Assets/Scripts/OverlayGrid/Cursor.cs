@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Cursor : MonoBehaviour
@@ -21,6 +22,7 @@ public class Cursor : MonoBehaviour
 
     [HideInInspector]
     public GameObject selectedUnit;
+    private Vector3 selectedUnitOldPos;
 
     [HideInInspector]
     public FighterStats selectedUnitsFighterStats;
@@ -39,7 +41,7 @@ public class Cursor : MonoBehaviour
         overlay = GameObject.Find("A*").GetComponentInChildren<Overlay>();
         pathFinding = GameObject.Find("A*").GetComponentInChildren<Pathfinding>();
         
-        actionMenu = GameObject.Find("ActionMenu");
+        actionMenu = GameObject.Find("ActionMenu"); //doesn't work :(
         gameController = GameObject.Find("GameControllerObject").GetComponentInChildren<GameController>();
     }
 
@@ -106,16 +108,15 @@ public class Cursor : MonoBehaviour
                     }
                     else //unit is selected and is clicked on again
                     {
-                        selectedUnitsFighterStats.hasMoved = true;
                         //actionMenu.SetActive(true);
-                        gameController.FirstTurn();
+                        gameController.CombatTurn();
                     } 
                 }
             }
             else if (hitObject.tag == "Enemy") //an enemy unit is selected (no other functionality).
             {
                 Debug.Log("An enemy was clicked");
-                if (selectedUnitsFighterStats.isSelected)
+                if (selectedUnitsFighterStats != null && selectedUnitsFighterStats.isSelected)
                 {
                     selectedEnemy = hitObject;
                     Debug.Log("An enemy was selected");
@@ -141,8 +142,13 @@ public class Cursor : MonoBehaviour
                 {
                     playerMovement(hitOverlayTilePos);
                 }
-                else if (selectedUnitsFighterStats != null)
+                else if (selectedUnitsFighterStats != null && !selectedUnitsFighterStats.hasMoved)
                 {
+                    //this still runs when the attack button is pressed (b/c cursor is still on an overlay tile
+                    //if attack doesn't run b/c enemy is not selected, the unit is still unselected
+                    
+                    //^^Checking if the unit has moved first fixes the issue.
+
                     selectedUnitsFighterStats.isSelected = false;
                     Debug.Log("The selected hero was unselected");
                 }
@@ -182,13 +188,15 @@ public class Cursor : MonoBehaviour
 
     void playerMovement(Vector3 _posToMoveTo)
     {
+        selectedUnitOldPos = selectedUnit.transform.position;
+
         selectedUnit.transform.position = _posToMoveTo;
-     
         selectedUnitsFighterStats.hasMoved = true;
+
         Debug.Log("The hero has moved.");
 
         //actionMenu.SetActive(true);
-        gameController.FirstTurn();
+        gameController.CombatTurn();
     }
 
 }

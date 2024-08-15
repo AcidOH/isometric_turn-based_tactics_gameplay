@@ -46,28 +46,55 @@ public class GameController : MonoBehaviour
 
     public void NextPhase()
     {
+        battleText.gameObject.SetActive(false);
+        battleMenu.SetActive(false);
+
         GameObject[] currentPhaseUnits = combatPhases[0];
 
         if (currentPhaseUnits.Length > 0)
         {
             bool completedAllTurns = true;
 
+            if (currentPhaseUnits == enemyUnits)
+            {
+                EnemyPhase();
+
+                //prepare for player phase
+                foreach (GameObject playerUnit in playerUnits)
+                {
+                    FighterStats playerFighterStats = playerUnit.GetComponent<FighterStats>();
+                    
+                    playerFighterStats.hasCompletedTurn = false;
+                    playerFighterStats.hasMoved = false;
+                }
+            }
+
             foreach (GameObject unit in currentPhaseUnits)
             {
-                if (unit.GetComponent<FighterStats>().isSelectable)
+                if (!unit.GetComponent<FighterStats>().hasCompletedTurn)
                 {
                     completedAllTurns = false;
-                    return;
+                    break;
                 }
             }
             if (completedAllTurns)
             {
                 combatPhases.Remove(currentPhaseUnits);
                 combatPhases.Add(currentPhaseUnits);
+
+                //NextPhase();
             }
         }
     }
 
+    public void EnemyPhase()
+    {
+        foreach (GameObject enemyUnit in enemyUnits)
+        {
+            CombatTurn(); //there's a better way to do this, and a better way to CombatTurn()
+            //makes more sense to construct enemy behaviour here and in enemy class/data.
+        }
+    }
 
     public void FirstTurn() //previously on Start() //adds turn speed to list, sorts to determine turn order
     {
@@ -98,7 +125,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            this.battleMenu.SetActive(false);
+            //this.battleMenu.SetActive(false);
             string attackType = "attack";
             cursor.selectedEnemy.GetComponent<FighterAction>().SelectAction(attackType);
         }
@@ -110,7 +137,7 @@ public class GameController : MonoBehaviour
         
         FighterStats currentFighterStats = fighterStats[0];
         fighterStats.Remove(currentFighterStats);
-        if (!currentFighterStats.GetDead() && !currentFighterStats.hasAttacked)
+        if (!currentFighterStats.GetDead() && !currentFighterStats.hasCompletedTurn)
         {
             GameObject currentUnit = currentFighterStats.gameObject;
             currentFighterStats.CalculateNextTurn(currentFighterStats.nextActTurn);
@@ -127,14 +154,14 @@ public class GameController : MonoBehaviour
                 string attackType = "attack";
                 currentUnit.GetComponent<FighterAction>().SelectAction(attackType);
             }
-            currentFighterStats.hasAttacked = true;
+            currentFighterStats.hasCompletedTurn = true;
         }
         /*else //the unit is still alive and has already attacked
         {
             //NextTurn();
         }*/
 
-        currentFighterStats.isSelectable = false;
+        currentFighterStats.hasCompletedTurn = true;
         currentFighterStats.isSelected = false;
     }
 }

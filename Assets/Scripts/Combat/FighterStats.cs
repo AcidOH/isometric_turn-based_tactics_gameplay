@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Unity.VisualScripting;
 
 public class FighterStats : MonoBehaviour, IComparable
 {
@@ -37,14 +38,19 @@ public class FighterStats : MonoBehaviour, IComparable
 
     private float health;
     private float energy;
+    private float movement;
 
     private Overlay overlay;
     private Pathfinding pathfinder;
 
-    public bool isSelectable = true;
     public bool isSelected = false;
+    public bool lookForPath = false;
     public bool hasMoved = false;
-    public bool hasAttacked = false;
+    public bool hasCompletedTurn = false;
+
+    public Vector3 lastWorldPos;
+
+    private Cursor cursor;
 
     void Awake()
     {
@@ -60,12 +66,70 @@ public class FighterStats : MonoBehaviour, IComparable
 
         health = owner.GetComponent<HumanEntity>().HumanData.healthPoints.BaseValue;
         energy = owner.GetComponent<HumanEntity>().HumanData.energy.BaseValue;
+        movement = owner.GetComponent<HumanEntity>().HumanData.movement.Value;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
 
         overlay = GameObject.Find("A*").GetComponent<Overlay>();
         pathfinder = GameObject.Find("A*").GetComponent<Pathfinding>();
+
+        lastWorldPos = owner.transform.position;
+
+        cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
     }
+
+    
+    public void SelectUnitAsAttacker()
+    {
+        if (!hasCompletedTurn)
+        {
+            isSelected = true;
+            cursor.selectedUnit = owner;
+            
+            if (!hasMoved)
+            {
+                ShowTilesInRange();
+
+                lookForPath = true;
+
+                //I don't want Move to be called by cursor, but it needs to be linked to Update
+
+            }
+            else if (hasMoved && !hasCompletedTurn)
+            {
+                //do ActionMenu things
+                isSelected = false;
+                hasCompletedTurn = true;
+                cursor.selectedUnit = null;
+            }
+        }
+    }
+
+    public void SelectUnitAsVictim()
+    {
+        if (cursor.selectedUnit != null)
+        {
+            isSelected = true;
+            cursor.selectedEnemy = owner;
+        }
+    }
+
+
+    public void Move(Vector3 newWorldPos)
+    {
+        if (pathfinder.isInRange(overlay.NodeFromWorldPoint(owner.transform.position), overlay.NodeFromWorldPoint(newWorldPos), movement * 10))
+        {
+            lastWorldPos = owner.transform.position;
+            owner.transform.position = newWorldPos;
+            lookForPath = false;
+        }
+        else
+        {
+            lookForPath = false;
+            isSelected = false;
+        }
+    }
+
 
     public void ReceiveDamage(float damage) //called in Attack Script (Attack)
     {
@@ -90,7 +154,7 @@ public class FighterStats : MonoBehaviour, IComparable
             GameControllerObj.GetComponent<GameController>().battleText.gameObject.SetActive(true);
             GameControllerObj.GetComponent<GameController>().battleText.text = damage.ToString();
         }
-        Invoke("ContinueGame", 2);
+        //Invoke("ContinueGame", 2);
     }
 
     public void updateEnergyFill(float cost) //called in Attack Script

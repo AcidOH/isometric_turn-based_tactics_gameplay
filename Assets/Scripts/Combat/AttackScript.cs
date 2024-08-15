@@ -44,10 +44,13 @@ public class AttackScript : MonoBehaviour
             //owner.GetComponent<Animator>().Play(animationName);
             targetFighterStats.ReceiveDamage(Mathf.CeilToInt(damage));
             attackerFighterStats.updateEnergyFill(energyCost);
+            
+            attackerFighterStats.hasCompletedTurn = true;
+            attackerFighterStats.isSelected = false;
         }
         else
         {
-            Invoke("SkipTurnContinueGame", 2); //I'm not sure you want a delay...
+            //Invoke("SkipTurnContinueGame", 2); //I'm not sure you want a delay...
         }
     }
 

@@ -17,10 +17,12 @@ public class FighterAction : MonoBehaviour
     private GameObject currentAttack;
 
     private Cursor cursor;
+    private GameController controller;
 
     void Awake()
     {
         cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
+        controller = GameObject.Find("GameControllerObject").GetComponent<GameController>();
     }
 
     public void SelectAction(string btn) //called by Make Button

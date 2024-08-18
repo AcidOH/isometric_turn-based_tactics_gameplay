@@ -16,6 +16,8 @@ public class MakeButton : MonoBehaviour
         hero = GameObject.FindGameObjectWithTag("Hero");
     }
 
+    //should be able to get which hero is attacking so that it can call the correct fighterAction
+
     private void AttachCallback(string btn)
     {
         if (btn.CompareTo("AttackBtn") == 0)

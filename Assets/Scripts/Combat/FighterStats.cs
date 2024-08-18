@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Unity.VisualScripting;
+using TMPro;
 
 public class FighterStats : MonoBehaviour, IComparable
 {
@@ -24,7 +25,6 @@ public class FighterStats : MonoBehaviour, IComparable
 
     private bool dead = false;
 
-    // Resize health and energy bar
     private Transform healthTransform;
     private Transform energyTransform;
 
@@ -35,6 +35,8 @@ public class FighterStats : MonoBehaviour, IComparable
     private float xNewEnergyScale;
 
     private GameObject GameControllerObj;
+    private GameController gameController;
+    private TextMeshProUGUI battleText;
 
     private float health;
     private float energy;
@@ -42,7 +44,7 @@ public class FighterStats : MonoBehaviour, IComparable
 
     private Overlay overlay;
     private Pathfinding pathfinder;
-
+    
     public bool isSelected = false;
     public bool lookForPath = false;
     public bool hasMoved = false;
@@ -51,6 +53,7 @@ public class FighterStats : MonoBehaviour, IComparable
     public Vector3 lastWorldPos;
 
     private Cursor cursor;
+    private GameObject actionMenu;
 
     void Awake()
     {
@@ -69,6 +72,8 @@ public class FighterStats : MonoBehaviour, IComparable
         movement = owner.GetComponent<HumanEntity>().HumanData.movement.Value;
 
         GameControllerObj = GameObject.Find("GameControllerObject");
+        gameController = GameControllerObj.GetComponent<GameController>();
+        battleText = GameControllerObj.GetComponent<GameController>().battleText;
 
         overlay = GameObject.Find("A*").GetComponent<Overlay>();
         pathfinder = GameObject.Find("A*").GetComponent<Pathfinding>();
@@ -76,17 +81,20 @@ public class FighterStats : MonoBehaviour, IComparable
         lastWorldPos = owner.transform.position;
 
         cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
+        actionMenu = GameObject.Find("ActionMenu");
     }
 
     
     public void SelectUnitAsAttacker()
     {
+        Debug.Log("A unit is selected as an attacker.");
+
         if (!hasCompletedTurn)
         {
             isSelected = true;
-            cursor.selectedUnit = owner;
+            gameController.currentAttacker = owner;
             
-            if (!hasMoved)
+            if (!hasMoved && owner.tag == "Hero")
             {
                 ShowTilesInRange();
 
@@ -97,23 +105,51 @@ public class FighterStats : MonoBehaviour, IComparable
             }
             else if (hasMoved && !hasCompletedTurn)
             {
-                //do ActionMenu things
-                isSelected = false;
-                hasCompletedTurn = true;
-                cursor.selectedUnit = null;
+                if (owner.tag == "Hero")
+                {
+                    actionMenu.SetActive(true);
+                }
+                else
+                {
+                    string attackType = "attack";
+                    owner.GetComponent<FighterAction>().SelectAction(attackType);
+                }
             }
         }
     }
 
     public void SelectUnitAsVictim()
     {
-        if (cursor.selectedUnit != null)
-        {
-            isSelected = true;
-            cursor.selectedEnemy = owner;
-        }
+        Debug.Log("A unit is selected as a victim.");
+
+        isSelected = true;
+        gameController.currentVictim = owner;
     }
 
+    public void UnselectCompletedTurnUnit()
+    {
+        Debug.Log("Units were unselected.");
+        
+        isSelected = false;
+        hasCompletedTurn = true;
+
+        if (owner.tag == "Hero")
+        {
+            actionMenu.SetActive(false);
+        }
+
+        gameController.currentAttacker = null;
+        gameController.currentVictim = null;
+
+        Invoke("HideBattleText", 1.5f);
+
+        bool  isNextPhase = gameController.IsNextPhase();
+        
+        if (isNextPhase)
+        {
+            gameController.NextPhase();
+        }
+    }
 
     public void Move(Vector3 newWorldPos)
     {
@@ -121,13 +157,21 @@ public class FighterStats : MonoBehaviour, IComparable
         {
             lastWorldPos = owner.transform.position;
             owner.transform.position = newWorldPos;
+            hasMoved = true;
             lookForPath = false;
+
+            SelectUnitAsAttacker();
         }
-        else
+        else if (!hasMoved)
         {
             lookForPath = false;
             isSelected = false;
         }
+    }
+
+    private void HideBattleText()
+    {
+        battleText.gameObject.SetActive(false);
     }
 
 
@@ -151,10 +195,10 @@ public class FighterStats : MonoBehaviour, IComparable
         }
         if (damage > 0) //for battleText, could be part of previous else if
         {
-            GameControllerObj.GetComponent<GameController>().battleText.gameObject.SetActive(true);
-            GameControllerObj.GetComponent<GameController>().battleText.text = damage.ToString();
+            battleText.gameObject.SetActive(true);
+            battleText.text = damage.ToString();
         }
-        //Invoke("ContinueGame", 2);
+
     }
 
     public void updateEnergyFill(float cost) //called in Attack Script
@@ -172,16 +216,12 @@ public class FighterStats : MonoBehaviour, IComparable
         return dead;
     }
 
-    void ContinueGame() //invoked in ReceiveDamage
-    {
-        GameObject.Find("GameControllerObject").GetComponent<GameController>().NextTurn();
-    }
     public void CalculateNextTurn(int currentTurn) //called in Game Controller
     {
         nextActTurn = currentTurn + Mathf.CeilToInt(100f / owner.GetComponent<HumanEntity>().HumanData.speed.Value);
     }
 
-    public int CompareTo(object otherStats) //be mindful that both the fcn and the method are called CompareTo
+    public int CompareTo(object otherStats) //fcn and the method are called CompareTo
     {
         int nex = nextActTurn.CompareTo(((FighterStats)otherStats).nextActTurn);
         return nex;

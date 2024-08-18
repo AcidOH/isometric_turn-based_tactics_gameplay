@@ -5,22 +5,28 @@ using UnityEngine.UI;
 using System.Transactions;
 using UnityEngine.SocialPlatforms;
 using TMPro;
+using UnityEditor;
 
 public class GameController : MonoBehaviour
 {
-    private GameObject[] playerUnits;
+    private FighterStats[] playerUnits;
     //private GameObject[] allyUnits;
-    private GameObject[] enemyUnits;
+    private FighterStats[] enemyUnits;
 
-    private List<GameObject[]> combatPhases;
+    private List<FighterStats[]> combatPhases;
     private List<FighterStats> fighterStats;
+
+    public GameObject currentAttacker;
+    public GameObject currentVictim;
+    public string currentPhase = "Player Phase";
 
     private Cursor cursor;
     private GameObject pathfindingObject;
 
     private GameObject battleMenu;
 
-    public TextMeshProUGUI battleText; //from Fighter Stats, shows damage done
+    public TextMeshProUGUI battleText;
+    public TextMeshProUGUI phaseText;
 
     private void Awake()
     {
@@ -30,12 +36,25 @@ public class GameController : MonoBehaviour
     {
         this.battleMenu.SetActive(false);
         
-        combatPhases = new List<GameObject[]>();
+        combatPhases = new List<FighterStats[]>();
         fighterStats = new List<FighterStats>();
 
-        playerUnits = GameObject.FindGameObjectsWithTag("Hero");
+        GameObject[] playerUnitObjects = GameObject.FindGameObjectsWithTag("Hero");
         //allyUnits = GameObject.FindGameObjectsWithTag("Ally");
-        enemyUnits = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] enemyUnitObjects = GameObject.FindGameObjectsWithTag("Enemy");
+
+        playerUnits = new FighterStats[playerUnitObjects.Length];
+        enemyUnits = new FighterStats[enemyUnitObjects.Length];
+
+        for (int i = 0; i < playerUnitObjects.Length; i++)
+        {
+            playerUnits[i] = playerUnitObjects[i].GetComponent<FighterStats>();
+        }
+
+        for (int i = 0; i < enemyUnitObjects.Length; i++)
+        {
+            enemyUnits[i] = enemyUnitObjects[i].GetComponent<FighterStats>();
+        }
 
         combatPhases.Add(playerUnits);
         combatPhases.Add(enemyUnits);
@@ -44,124 +63,83 @@ public class GameController : MonoBehaviour
         pathfindingObject = GameObject.Find("A*");
     }
 
-    public void NextPhase()
-    {
-        battleText.gameObject.SetActive(false);
-        battleMenu.SetActive(false);
 
-        GameObject[] currentPhaseUnits = combatPhases[0];
+    public bool IsNextPhase()
+    {
+        Debug.Log("IsNextPhase is called.");
+        
+        FighterStats[] currentPhaseUnits = combatPhases[0];
 
         if (currentPhaseUnits.Length > 0)
         {
-            bool completedAllTurns = true;
-
-            if (currentPhaseUnits == enemyUnits)
+            foreach (FighterStats unitStats in currentPhaseUnits)
             {
-                EnemyPhase();
-
-                //prepare for player phase
-                foreach (GameObject playerUnit in playerUnits)
+                if (!unitStats.hasCompletedTurn)
                 {
-                    FighterStats playerFighterStats = playerUnit.GetComponent<FighterStats>();
-                    
-                    playerFighterStats.hasCompletedTurn = false;
-                    playerFighterStats.hasMoved = false;
+                    return false;
                 }
-            }
-
-            foreach (GameObject unit in currentPhaseUnits)
-            {
-                if (!unit.GetComponent<FighterStats>().hasCompletedTurn)
-                {
-                    completedAllTurns = false;
-                    break;
-                }
-            }
-            if (completedAllTurns)
-            {
-                combatPhases.Remove(currentPhaseUnits);
-                combatPhases.Add(currentPhaseUnits);
-
-                //NextPhase();
             }
         }
+
+        return true;
     }
 
-    public void EnemyPhase()
+    public void NextPhase()
     {
-        foreach (GameObject enemyUnit in enemyUnits)
+        Debug.Log("NextPhase is called.");
+
+        FighterStats[] currentPhaseUnits = combatPhases[0];
+
+        combatPhases.Remove(currentPhaseUnits);
+        combatPhases.Add(currentPhaseUnits);
+
+        currentPhaseUnits = combatPhases[0];
+        foreach (FighterStats unit in currentPhaseUnits)
         {
-            CombatTurn(); //there's a better way to do this, and a better way to CombatTurn()
-            //makes more sense to construct enemy behaviour here and in enemy class/data.
+            unit.hasMoved = false;
+            unit.hasCompletedTurn = false;
+        }
+
+        if (currentPhaseUnits == playerUnits)
+        {
+            currentPhase = "Player Phase";
+            phaseText.text = currentPhase;
+
+            Debug.Log("PLAYER PHASE");
+        }
+        else if (currentPhaseUnits == enemyUnits) //or == allyUnits
+        {
+            currentPhase = "Enemy Phase";
+            phaseText.text = currentPhase;
+
+            Debug.Log("ENEMY PHASE");
+
+            foreach (FighterStats unit in currentPhaseUnits)
+            {
+                int indexOfVictim = Random.Range(0, playerUnits.Length - 1);
+                playerUnits[indexOfVictim].SelectUnitAsVictim();
+
+                //b/c enemy units don't get to move yet, set hasMoved to true so it can attack
+                unit.hasMoved = true;
+                unit.SelectUnitAsAttacker();
+            }
         }
     }
 
-    public void FirstTurn() //previously on Start() //adds turn speed to list, sorts to determine turn order
+    public void DetermineAttackOrder()
     {
-        GameObject hero = cursor.selectedUnit;
-        FighterStats currentFighterStats = hero.GetComponent<FighterStats>();
-        currentFighterStats.CalculateNextTurn(0);
-        fighterStats.Add(currentFighterStats);
+        fighterStats.Clear();
+        
+        FighterStats currentAttackerStats = currentAttacker.GetComponent<FighterStats>();
+        FighterStats currentVictimStats = currentVictim.GetComponent<FighterStats>();
 
-        GameObject enemy = cursor.selectedEnemy;
-        FighterStats currentEnemyStats = enemy.GetComponent<FighterStats>();
-        currentEnemyStats.CalculateNextTurn(0);
-        fighterStats.Add(currentEnemyStats);
+        currentAttackerStats.CalculateNextTurn(0);
+        currentVictimStats.CalculateNextTurn(0);
+
+        fighterStats.Add(currentAttackerStats);
+        fighterStats.Add(currentVictimStats);
 
         fighterStats.Sort();
-
-
-        NextTurn();
     }
 
-    public void CombatTurn()
-    {
-        if (cursor.selectedUnitsFighterStats.isSelected)
-        {
-            //its hero's turn
-            this.battleMenu.SetActive(true);
-            //as part of attack, determine attack order, then set the attacker's has attacked to true.
-            
-        }
-        else
-        {
-            //this.battleMenu.SetActive(false);
-            string attackType = "attack";
-            cursor.selectedEnemy.GetComponent<FighterAction>().SelectAction(attackType);
-        }
-    }
-
-    public void NextTurn() //calls itself in a loop unless a character dies
-    {
-        battleText.gameObject.SetActive(false);
-        
-        FighterStats currentFighterStats = fighterStats[0];
-        fighterStats.Remove(currentFighterStats);
-        if (!currentFighterStats.GetDead() && !currentFighterStats.hasCompletedTurn)
-        {
-            GameObject currentUnit = currentFighterStats.gameObject;
-            currentFighterStats.CalculateNextTurn(currentFighterStats.nextActTurn);
-            fighterStats.Add(currentFighterStats);
-            fighterStats.Sort();
-            if (currentUnit.tag == "Hero")
-            {
-                this.battleMenu.SetActive(true);
-            }
-            else //choose enemy action
-            {
-                this.battleMenu.SetActive(false);
-                //string attackType = Random.Range(0, 2) == 1 ? "melee" : "range";
-                string attackType = "attack";
-                currentUnit.GetComponent<FighterAction>().SelectAction(attackType);
-            }
-            currentFighterStats.hasCompletedTurn = true;
-        }
-        /*else //the unit is still alive and has already attacked
-        {
-            //NextTurn();
-        }*/
-
-        currentFighterStats.hasCompletedTurn = true;
-        currentFighterStats.isSelected = false;
-    }
 }

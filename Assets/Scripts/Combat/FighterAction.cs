@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class FighterAction : MonoBehaviour
 {
-    private GameObject hero;
-    private GameObject enemy;
+    //private GameObject hero;
+    //private GameObject enemy;
 
     [SerializeField]
     private GameObject meleePrefab;
@@ -17,37 +17,41 @@ public class FighterAction : MonoBehaviour
     private GameObject currentAttack;
 
     private Cursor cursor;
-    private GameController controller;
+    private GameController gameController;
 
     void Awake()
     {
         cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
-        controller = GameObject.Find("GameControllerObject").GetComponent<GameController>();
+        gameController = GameObject.Find("GameControllerObject").GetComponent<GameController>();
     }
 
     public void SelectAction(string btn) //called by Make Button
     {
-        if (cursor.selectedEnemy != null)
+        Debug.Log("SelectAction is called.");
+        
+        //doesn't care who hero and enemy are, just who is attacking and who is being attacked
+        //should be able to determine who is being attacked by checking what other unit is selected
+        //meleePrefab is who is attacking (whoever's fighterAction was called)
+
+        /*hero = GameObject.FindGameObjectWithTag("Hero");
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
+
+        GameObject victim = hero;
+
+        if (tag == "Hero") //tag of the object the script is attached to
         {
-            hero = cursor.selectedUnit;
-            enemy = cursor.selectedEnemy;
+            victim = enemy;
+        }*/
 
-            GameObject victim = hero;
-
-            if (tag == "Hero") //tag of the object the script is attached to
-            {
-                victim = enemy;
-            }
-            if (btn.CompareTo("attack") == 0)
-            {
-                Debug.Log(victim + " was hit by attack!");
-                meleePrefab.GetComponent<AttackScript>().Attack(victim);
-            }
-            else //wait
-            {
-                Debug.Log(hero + " waited.");
-                //hasMoved = true, isSelectable = false, isSelected = false
-            }
+        if (btn.CompareTo("attack") == 0)
+        {
+            Debug.Log(gameController.currentVictim + " was hit by attack!");
+            meleePrefab.GetComponent<AttackScript>().Attack(gameController.currentVictim);
+        }
+        else //wait
+        {
+            Debug.Log(gameController.currentAttacker + " waited.");
+            //hasMoved = true, isSelectable = false, isSelected = false
         }
     }
 }

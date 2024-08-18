@@ -24,7 +24,9 @@ public class AttackScript : MonoBehaviour
 
     public void Attack(GameObject victim) //called in Fighter Action
     {
-        attackerStats = owner.GetComponent<HumanEntity>().HumanData; 
+        Debug.Log("Attack is called.");
+        
+        attackerStats = owner.GetComponent<HumanEntity>().HumanData;
         targetStats = victim.GetComponent<HumanEntity>().HumanData; // victim is the thing being attacked
 
         attackerFighterStats = owner.GetComponent<FighterStats>();
@@ -44,18 +46,8 @@ public class AttackScript : MonoBehaviour
             //owner.GetComponent<Animator>().Play(animationName);
             targetFighterStats.ReceiveDamage(Mathf.CeilToInt(damage));
             attackerFighterStats.updateEnergyFill(energyCost);
-            
-            attackerFighterStats.hasCompletedTurn = true;
-            attackerFighterStats.isSelected = false;
-        }
-        else
-        {
-            //Invoke("SkipTurnContinueGame", 2); //I'm not sure you want a delay...
-        }
-    }
 
-    void SkipTurnContinueGame()
-    {
-        GameObject.Find("GameControllerObject").GetComponent<GameController>().NextTurn();
+            attackerFighterStats.UnselectCompletedTurnUnit();
+        }
     }
 }

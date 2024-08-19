@@ -91,8 +91,16 @@ public class FighterStats : MonoBehaviour, IComparable
 
         if (!hasCompletedTurn)
         {
-            isSelected = true;
-            gameController.currentAttacker = owner;
+            if (!isSelected)
+            {
+                isSelected = true;
+                gameController.currentAttacker = owner;
+            }
+            else
+            {
+                hasMoved = true;
+                lookForPath = false;
+            }
             
             if (!hasMoved && owner.tag == "Hero")
             {
@@ -131,10 +139,12 @@ public class FighterStats : MonoBehaviour, IComparable
         Debug.Log("Units were unselected.");
         
         isSelected = false;
+        hasMoved = true;
         hasCompletedTurn = true;
 
         if (owner.tag == "Hero")
         {
+            gameController.SetAttackButtonAsInteractable(false);
             actionMenu.SetActive(false);
         }
 
@@ -143,9 +153,7 @@ public class FighterStats : MonoBehaviour, IComparable
 
         Invoke("HideBattleText", 1.5f);
 
-        bool  isNextPhase = gameController.IsNextPhase();
-        
-        if (isNextPhase)
+        if (gameController.IsNextPhase())
         {
             gameController.NextPhase();
         }
@@ -153,10 +161,13 @@ public class FighterStats : MonoBehaviour, IComparable
 
     public void Move(Vector3 newWorldPos)
     {
-        if (pathfinder.isInRange(overlay.NodeFromWorldPoint(owner.transform.position), overlay.NodeFromWorldPoint(newWorldPos), movement * 10))
+        if (pathfinder.isInRange(overlay.NodeFromWorldPoint(owner.transform.position), overlay.NodeFromWorldPoint(newWorldPos), movement * 10) && !hasMoved)
         {
             lastWorldPos = owner.transform.position;
             owner.transform.position = newWorldPos;
+
+            cursor.ShowSelectedTile();
+
             hasMoved = true;
             lookForPath = false;
 
@@ -166,6 +177,12 @@ public class FighterStats : MonoBehaviour, IComparable
         {
             lookForPath = false;
             isSelected = false;
+        }
+        else
+        {
+            owner.transform.position = lastWorldPos;
+            isSelected = false;
+            hasMoved = false;
         }
     }
 

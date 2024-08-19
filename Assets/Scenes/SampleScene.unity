@@ -1401,6 +1401,8 @@ MonoBehaviour:
   currentPhase: Player Phase
   battleText: {fileID: 112370946}
   phaseText: {fileID: 808876775}
+  attackButton: {fileID: 1204511410}
+  waitButton: {fileID: 2029491837}
 --- !u!4 &193843736
 Transform:
   m_ObjectHideFlags: 0
@@ -8668,7 +8670,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25cd0ea7ba89f554eaf75fb0059fefe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedUnitsFighterStats: {fileID: 0}
 --- !u!1 &1125506994
 GameObject:
   m_ObjectHideFlags: 0

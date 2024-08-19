@@ -114,6 +114,8 @@ public class Cursor : MonoBehaviour
                     
                     hitFighterStats = hitObject.GetComponent<FighterStats>();
                     hitFighterStats.SelectUnitAsVictim();
+                    
+                    gameController.SetAttackButtonAsInteractable(true);
                 }
                 else
                 {
@@ -123,19 +125,15 @@ public class Cursor : MonoBehaviour
                     {
                         node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
                     }
-
-                    if (searchForPath == true)
-                    {
-                        Debug.Log("searchForPath == true");
-                        hitFighterStats.Move(hitOverlayTilePos);
-                    }
+                        
+                    hitFighterStats.Move(hitOverlayTilePos);
                 }
             }
 
             if (searchForPath == true)
             {
                 pathFinding.FindPath(selectedTilePos, hitOverlayTilePos, true, unitRangeOfMovement);
-                selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                ShowSelectedTile();
             }
 
         }
@@ -163,6 +161,14 @@ public class Cursor : MonoBehaviour
         GUILayout.Label("Mouse position: " + mousePos);
         GUILayout.Label("World position: " + worldMousePos.ToString("F3"));
         GUILayout.EndArea();
+    }
+
+    public void ShowSelectedTile()
+    {
+        if (selectedTile != null)
+        {
+            selectedTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        }
     }
 
 }

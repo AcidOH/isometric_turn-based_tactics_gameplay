@@ -50,4 +50,14 @@ public class AttackScript : MonoBehaviour
             attackerFighterStats.UnselectCompletedTurnUnit();
         }
     }
+
+    public void Wait()
+    {
+        Debug.Log("Wait is called.");
+
+        attackerStats = owner.GetComponent<HumanEntity>().HumanData;
+        attackerFighterStats = owner.GetComponent<FighterStats>();
+
+        attackerFighterStats.UnselectCompletedTurnUnit();
+    }
 }

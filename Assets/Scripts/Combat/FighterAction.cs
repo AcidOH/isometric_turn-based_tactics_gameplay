@@ -28,20 +28,6 @@ public class FighterAction : MonoBehaviour
     public void SelectAction(string btn) //called by Make Button
     {
         Debug.Log("SelectAction is called.");
-        
-        //doesn't care who hero and enemy are, just who is attacking and who is being attacked
-        //should be able to determine who is being attacked by checking what other unit is selected
-        //meleePrefab is who is attacking (whoever's fighterAction was called)
-
-        /*hero = GameObject.FindGameObjectWithTag("Hero");
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
-
-        GameObject victim = hero;
-
-        if (tag == "Hero") //tag of the object the script is attached to
-        {
-            victim = enemy;
-        }*/
 
         if (btn.CompareTo("attack") == 0)
         {
@@ -51,7 +37,7 @@ public class FighterAction : MonoBehaviour
         else //wait
         {
             Debug.Log(gameController.currentAttacker + " waited.");
-            //hasMoved = true, isSelectable = false, isSelected = false
+            meleePrefab.GetComponent<AttackScript>().Wait();
         }
     }
 }

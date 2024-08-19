@@ -8,25 +8,26 @@ public class MakeButton : MonoBehaviour
     [SerializeField]
     private bool physical;
 
-    private GameObject hero;
+    private GameController gameController;
+
     void Start()
     {
         string temp = gameObject.name;
         gameObject.GetComponent<Button>().onClick.AddListener(() => AttachCallback(temp));
-        hero = GameObject.FindGameObjectWithTag("Hero");
+        gameController = GameObject.Find("GameControllerObject").GetComponent<GameController>();
     }
-
-    //should be able to get which hero is attacking so that it can call the correct fighterAction
 
     private void AttachCallback(string btn)
     {
+        GameObject hero = gameController.currentAttacker;
+        
         if (btn.CompareTo("AttackBtn") == 0)
         {
             hero.GetComponent<FighterAction>().SelectAction("attack");
         }
-        else //wait
+        else 
         {
             hero.GetComponent<FighterAction>().SelectAction("wait");
         }
-    } //when button pressed, checks who is attacked in Fighter Action, then calls Attack() in Attack Script
+    }
 }

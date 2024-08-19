@@ -28,6 +28,11 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI battleText;
     public TextMeshProUGUI phaseText;
 
+    [SerializeField]
+    private Button attackButton;
+    [SerializeField]
+    private Button waitButton;
+
     private void Awake()
     {
         battleMenu = GameObject.Find("ActionMenu");
@@ -35,6 +40,7 @@ public class GameController : MonoBehaviour
     void Start() 
     {
         this.battleMenu.SetActive(false);
+        attackButton.interactable = false;
         
         combatPhases = new List<FighterStats[]>();
         fighterStats = new List<FighterStats>();
@@ -96,6 +102,8 @@ public class GameController : MonoBehaviour
         currentPhaseUnits = combatPhases[0];
         foreach (FighterStats unit in currentPhaseUnits)
         {
+            unit.isSelected = false;
+            unit.lookForPath = false;
             unit.hasMoved = false;
             unit.hasCompletedTurn = false;
         }
@@ -109,6 +117,7 @@ public class GameController : MonoBehaviour
         }
         else if (currentPhaseUnits == enemyUnits) //or == allyUnits
         {
+            //Enemy phase doesn't display on phaseText b/c the enemy's turn occurs all in one frame lol
             currentPhase = "Enemy Phase";
             phaseText.text = currentPhase;
 
@@ -140,6 +149,11 @@ public class GameController : MonoBehaviour
         fighterStats.Add(currentVictimStats);
 
         fighterStats.Sort();
+    }
+
+    public void SetAttackButtonAsInteractable(bool bln)
+    {
+        attackButton.interactable = bln;
     }
 
 }

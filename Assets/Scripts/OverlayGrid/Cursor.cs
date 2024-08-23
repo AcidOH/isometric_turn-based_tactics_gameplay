@@ -20,6 +20,7 @@ public class Cursor : MonoBehaviour
     private Vector3 selectedTilePos;
 
     private FighterStats hitFighterStats;
+    private FighterStats heroStats;
 
     public float unitRangeOfMovement
     {
@@ -37,7 +38,6 @@ public class Cursor : MonoBehaviour
             return false;
         }
     }
-
 
     void Start()
     {
@@ -104,20 +104,36 @@ public class Cursor : MonoBehaviour
                 if (hitObject.tag == "Hero")
                 {
                     Debug.Log("A Hero was clicked.");
-                    
+
                     hitFighterStats = hitObject.GetComponent<FighterStats>();
                     hitFighterStats.SelectUnitAsAttacker();
+
+                    hitFighterStats.currentTilePos = hitOverlayTilePos;
+                    heroStats = hitFighterStats;
                 }
                 else if (hitObject.tag == "Enemy")
                 {
                     Debug.Log("An Enemy was clicked.");
-                    
+                   
                     hitFighterStats = hitObject.GetComponent<FighterStats>();
                     hitFighterStats.SelectUnitAsVictim();
-                    
-                    gameController.SetAttackButtonAsInteractable(true);
+
+                    hitFighterStats.currentTilePos = hitOverlayTilePos;
+
+                    if (heroStats.isVictimInRange(hitObject) && heroStats.hasMoved)
+                    {
+                        gameController.SetAttackButtonAsInteractable(true);
+                    }
+                    else
+                    {
+                        gameController.currentVictim = null;
+                        hitFighterStats = null;
+
+                        hitObject = hitOverlayTile;
+                    }
                 }
-                else
+                
+                if (hitObject.tag == "OverlayTileTag")
                 {
                     Debug.Log("Neither a Hero nor Enemy was clicked.");
                     
@@ -126,7 +142,7 @@ public class Cursor : MonoBehaviour
                         node.overlayTile.GetComponentInChildren<IndividualTiles>().HideTile();
                     }
                         
-                    hitFighterStats.Move(hitOverlayTilePos);
+                    if (heroStats != null) heroStats.Move(hitOverlayTilePos);
                 }
             }
 

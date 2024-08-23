@@ -21,7 +21,7 @@ public class GameController : MonoBehaviour
     public string currentPhase = "Player Phase";
 
     private Cursor cursor;
-    private GameObject pathfindingObject;
+    private Pathfinding pathFinder;
 
     private GameObject battleMenu;
 
@@ -66,7 +66,7 @@ public class GameController : MonoBehaviour
         combatPhases.Add(enemyUnits);
 
         cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
-        pathfindingObject = GameObject.Find("A*");
+        pathFinder = GameObject.Find("A*").GetComponent<Pathfinding>();
     }
 
 
@@ -128,8 +128,15 @@ public class GameController : MonoBehaviour
                 int indexOfVictim = Random.Range(0, playerUnits.Length - 1);
                 playerUnits[indexOfVictim].SelectUnitAsVictim();
 
-                //b/c enemy units don't get to move yet, set hasMoved to true so it can attack
-                unit.hasMoved = true;
+                if (unit.isVictimInRange(currentVictim))
+                {
+                    unit.hasMoved = true;
+                }
+                else
+                {
+                    unit.Move(unit.FindPosClosestToVictim());
+                }
+
                 unit.SelectUnitAsAttacker();
             }
         }

@@ -34,10 +34,15 @@ public class FighterAction : MonoBehaviour
             Debug.Log(gameController.currentVictim + " was hit by attack!");
             meleePrefab.GetComponent<AttackScript>().Attack(gameController.currentVictim);
         }
-        else //wait
+        else if (btn.CompareTo("wait") == 0) //wait
         {
             Debug.Log(gameController.currentAttacker + " waited.");
             meleePrefab.GetComponent<AttackScript>().Wait();
+        }
+        else
+        {
+            Debug.Log(gameController.currentAttacker + "went back.");
+            meleePrefab.GetComponent<AttackScript>().Return();
         }
     }
 }

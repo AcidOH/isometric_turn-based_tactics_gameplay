@@ -25,7 +25,7 @@ public class AttackScript : MonoBehaviour
     public void Attack(GameObject victim) //called in Fighter Action
     {
         Debug.Log("Attack is called.");
-        
+       
         attackerStats = owner.GetComponent<HumanEntity>().HumanData;
         targetStats = victim.GetComponent<HumanEntity>().HumanData; // victim is the thing being attacked
 
@@ -55,9 +55,15 @@ public class AttackScript : MonoBehaviour
     {
         Debug.Log("Wait is called.");
 
-        attackerStats = owner.GetComponent<HumanEntity>().HumanData;
         attackerFighterStats = owner.GetComponent<FighterStats>();
-
         attackerFighterStats.UnselectCompletedTurnUnit();
+    }
+
+    public void Return()
+    {
+        Debug.Log("Return is called.");
+        
+        attackerFighterStats = owner.GetComponent<FighterStats>();
+        attackerFighterStats.UnselectIncompleteTurnUnit();
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using Unity.VisualScripting;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 
 public class FighterStats : MonoBehaviour, IComparable
 {
@@ -42,6 +43,8 @@ public class FighterStats : MonoBehaviour, IComparable
     private float energy;
     private float movement;
 
+    public float attackRange;
+
     private Overlay overlay;
     private Pathfinding pathfinder;
     
@@ -51,9 +54,12 @@ public class FighterStats : MonoBehaviour, IComparable
     public bool hasCompletedTurn = false;
 
     public Vector3 lastWorldPos;
+    public Vector3 currentTilePos;
 
     private Cursor cursor;
     private GameObject actionMenu;
+
+    private StatTextController statTextController;
 
     void Awake()
     {
@@ -79,9 +85,12 @@ public class FighterStats : MonoBehaviour, IComparable
         pathfinder = GameObject.Find("A*").GetComponent<Pathfinding>();
 
         lastWorldPos = owner.transform.position;
+        currentTilePos = lastWorldPos + new Vector3(0, 0, -1);
+        //^^This isn't always going to be true, it just works for now!!
 
         cursor = GameObject.Find("Cursor").GetComponent<Cursor>();
         actionMenu = GameObject.Find("ActionMenu");
+        statTextController = owner.GetComponent<StatTextController>();
     }
 
     
@@ -95,6 +104,7 @@ public class FighterStats : MonoBehaviour, IComparable
             {
                 isSelected = true;
                 gameController.currentAttacker = owner;
+                if (owner.tag == "Hero") statTextController.ShowStatDisplay();
             }
             else
             {
@@ -104,22 +114,26 @@ public class FighterStats : MonoBehaviour, IComparable
             
             if (!hasMoved && owner.tag == "Hero")
             {
-                ShowTilesInRange();
-
+                ShowTilesInRange(movement*10);
                 lookForPath = true;
-
-                //I don't want Move to be called by cursor, but it needs to be linked to Update
 
             }
             else if (hasMoved && !hasCompletedTurn)
             {
                 if (owner.tag == "Hero")
                 {
+                    ShowTilesInRange(attackRange*10);
                     actionMenu.SetActive(true);
                 }
                 else
                 {
-                    string attackType = "attack";
+                    string attackType = "wait";
+
+                    if (isVictimInRange(gameController.currentVictim))
+                    {
+                        attackType = "attack";
+                    }
+                    
                     owner.GetComponent<FighterAction>().SelectAction(attackType);
                 }
             }
@@ -132,6 +146,8 @@ public class FighterStats : MonoBehaviour, IComparable
 
         isSelected = true;
         gameController.currentVictim = owner;
+
+        if (owner.tag == "Enemy") statTextController.ShowStatDisplay();
     }
 
     public void UnselectCompletedTurnUnit()
@@ -146,6 +162,7 @@ public class FighterStats : MonoBehaviour, IComparable
         {
             gameController.SetAttackButtonAsInteractable(false);
             actionMenu.SetActive(false);
+            statTextController.HideAllStatDisplays();
         }
 
         gameController.currentAttacker = null;
@@ -157,6 +174,19 @@ public class FighterStats : MonoBehaviour, IComparable
         {
             gameController.NextPhase();
         }
+    }
+
+    public void UnselectIncompleteTurnUnit()
+    {
+        owner.transform.position = lastWorldPos;
+        isSelected = false;
+        hasMoved = false;
+
+        if (owner.tag == "Hero")
+        {
+            actionMenu.SetActive(false);
+            statTextController.HideStatDisplay();
+        } 
     }
 
     public void Move(Vector3 newWorldPos)
@@ -178,12 +208,12 @@ public class FighterStats : MonoBehaviour, IComparable
             lookForPath = false;
             isSelected = false;
         }
-        else
+        /*else
         {
             owner.transform.position = lastWorldPos;
             isSelected = false;
             hasMoved = false;
-        }
+        }*/
     }
 
     private void HideBattleText()
@@ -244,18 +274,16 @@ public class FighterStats : MonoBehaviour, IComparable
         return nex;
     }
 
-    public void ShowTilesInRange()
+    public void ShowTilesInRange(float range)
     {
         if (overlay.grid != null)
         {
             Vector3 origin = owner.transform.position;
             Node originNode = overlay.NodeFromWorldPoint(origin);
-            
-            float _playerRangeOfMovement = owner.GetComponent<HumanEntity>().HumanData.movement.Value * 10;
-
+           
             foreach (Node node in overlay.grid)
             {
-                if (!pathfinder.isInRange(originNode, node, _playerRangeOfMovement))
+                if (!pathfinder.isInRange(originNode, node, range))
                 {
                     node.overlayTile.GetComponent<SpriteRenderer>().color = Color.red;
                 }
@@ -264,4 +292,33 @@ public class FighterStats : MonoBehaviour, IComparable
         }
     }
 
+    public bool isVictimInRange(GameObject victim)
+    {
+        Vector3 attackerPos = owner.transform.position;
+        Node attackerNode = overlay.NodeFromWorldPoint(attackerPos);
+
+        Vector3 victimPos = victim.transform.position;
+        Node victimNode = overlay.NodeFromWorldPoint(victimPos);
+
+        return pathfinder.isInRange(attackerNode, victimNode, attackRange*10);
+        
+    }
+
+    public void FindNearestVictim()
+    {
+        
+    }
+
+    public Vector3 FindPosClosestToVictim()
+    {
+        Node victimNode = pathfinder.FindNodeWithinRange(owner.transform.position, gameController.currentVictim.transform.position, false, movement);
+        
+        if (victimNode != null)
+        {
+            Debug.Log("Closest pos to victim = " + victimNode.worldPosition);
+            return victimNode.worldPosition;
+        }
+        Debug.Log("victimNode == null, returned owner pos");
+        return owner.transform.position;
+    }
 }

@@ -1,51 +1,113 @@
 using TMPro;
 using UnityEngine;
 
-public class StatTextController : ScriptableObject
+public class StatTextController : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject owner;
+    
     private GameObject heroStatDisplay;
     private GameObject enemyStatDisplay;
     
-    private HumanData fighterStats;
+    private HumanData humanData;
     private AttackScript attackStats;
 
-    //public TextMeshProUGUI exp;
-    public TextMeshProUGUI hp;
-    public TextMeshProUGUI eng;
+    //private string exp;
+    private string hp;
+    private string eng;
 
-    public TextMeshProUGUI def;
-    public TextMeshProUGUI res;
-    public TextMeshProUGUI spd;
-    //public TextMeshProUGUI skl;
+    private string def;
+    private string res;
+    private string spd;
+    //private string skl;
 
-    //public TextMeshProUGUI hit;
-    //public TextMeshProUGUI dmg;
-    //public TextMeshProUGUI crit;
+    private string hit;
+    private string dmg;
+    private string crit;
 
-    //public TextMeshProUGUI numOfAttacks; //set in Attack Script
+    private TextMeshProUGUI expText;
+    private TextMeshProUGUI hpText;
+    private TextMeshProUGUI engText;
+
+    private TextMeshProUGUI defText;
+    private TextMeshProUGUI resText;
+    private TextMeshProUGUI spdText;
+    private TextMeshProUGUI sklText;
+
+    private TextMeshProUGUI hitText;
+    private TextMeshProUGUI dmgText;
+    private TextMeshProUGUI critText;
+
+    private TextMeshProUGUI numOfAttacks; //set in Attack Script
+
+    private void Awake()
+    {
+        heroStatDisplay = GameObject.Find("HeroInfo");
+        enemyStatDisplay = GameObject.Find("EnemyInfo");
+    }
+
+    private void Start()
+    {
+        humanData = owner.GetComponent<HumanEntity>().HumanData;
+        attackStats = owner.GetComponentInChildren<AttackScript>();
+
+        //exp = humanData.experience.Value.ToString();
+        hp = humanData.healthPoints.Value.ToString();
+        eng = humanData.energy.Value.ToString();
+
+        def = humanData.defence.Value.ToString();
+        res = humanData.resistance.Value.ToString();
+        spd = humanData.speed.Value.ToString();
+        //skl = humanData.skill.Value.ToString();
+
+        //Set stats here, maybe don't need all of them.
+        //The ones that are subject to change like hit, dmg, crit should be set every time
+
+        Debug.Log("HeroInfo: " + heroStatDisplay + ", EnemyInfo: " + enemyStatDisplay);
+
+        heroStatDisplay.SetActive(false);
+        enemyStatDisplay.SetActive(false);
+    }
 
     public void ShowStatDisplay()
     {
-        GameObject.Find("HeadsUpCanvas").transform.GetChild(6).gameObject.SetActive(true); //GetChild asks for the index of the child in an array of children
+        if (owner.tag == "Hero")
+        {
+            heroStatDisplay.SetActive(true);
+        }
+        else if (owner.tag == "Enemy")
+        {
+            enemyStatDisplay.SetActive(true);
+        }
     }
     public void HideStatDisplay()
     {
-        GameObject.Find("HeadsUpCanvas").transform.GetChild(6).gameObject.SetActive(false);
+        if (owner.tag == "Hero")
+        {
+            heroStatDisplay.SetActive(false);
+        }
+        else if (owner.tag == "Enemy")
+        {
+            enemyStatDisplay.SetActive(false);
+        }
     }
 
-    public void UpdateTextInStatDisplay(GameObject owner)
+    public void HideAllStatDisplays()
     {
-        fighterStats = owner.GetComponent<HumanEntity>().HumanData;
-        attackStats = owner.GetComponentInChildren<AttackScript>();
+        heroStatDisplay.SetActive(false);
+        enemyStatDisplay.SetActive(false);
+    }
 
-        //exp.text = fighterStats.experience.Value.ToString();
-        hp.text = fighterStats.healthPoints.Value.ToString();
-        eng.text = fighterStats.energy.Value.ToString();
+    public void UpdateTextInStatDisplay()
+    {
+        //exp.text = humanData.experience.Value.ToString();
+        hpText.text = humanData.healthPoints.Value.ToString();
+        engText.text = humanData.energy.Value.ToString();
 
-        def.text = fighterStats.defence.Value.ToString();
-        res.text = fighterStats.resistance.Value.ToString();
-        spd.text = fighterStats.speed.Value.ToString();
-        //skl.text = fighterStats.skill.Value.ToString();
+        defText.text = def;
+        resText.text = res;
+        spdText.text = spd;
+        //skl.text = humanData.skill.Value.ToString();
     }
 
     /*public void UpdateProfileImage(GameObject owner)

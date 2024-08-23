@@ -20,14 +20,18 @@ public class MakeButton : MonoBehaviour
     private void AttachCallback(string btn)
     {
         GameObject hero = gameController.currentAttacker;
-        
+
         if (btn.CompareTo("AttackBtn") == 0)
         {
             hero.GetComponent<FighterAction>().SelectAction("attack");
         }
-        else 
+        else if (btn.CompareTo("WaitBtn") == 0)
         {
             hero.GetComponent<FighterAction>().SelectAction("wait");
+        }
+        else
+        {
+            hero.GetComponent<FighterAction>().SelectAction("return");
         }
     }
 }

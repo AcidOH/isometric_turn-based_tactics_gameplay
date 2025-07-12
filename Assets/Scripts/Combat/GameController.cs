@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         battleMenu = GameObject.Find("ActionMenu");
+        //battleMenu = GameObject.Find("ActionMenuV2");
     }
     void Start() 
     {

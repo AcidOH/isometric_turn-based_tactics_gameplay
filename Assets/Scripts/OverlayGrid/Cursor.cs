@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Cursor : MonoBehaviour
 {
+    public Vector3 worldMousePos; //maybe this should't be public, but I can't remember what the alternatives are...
+    public Vector2 screenMousePos;
+
     private Camera cam;
     private Vector2 direction;
 
@@ -163,18 +166,18 @@ public class Cursor : MonoBehaviour
 
     void MoveMouse(Event _currentEvent)
     {
-        Vector2 mousePos = new Vector2();
+        screenMousePos = new Vector2();
 
-        mousePos.x = _currentEvent.mousePosition.x;
-        mousePos.y = cam.pixelHeight - _currentEvent.mousePosition.y;
+        screenMousePos.x = _currentEvent.mousePosition.x;
+        screenMousePos.y = cam.pixelHeight - _currentEvent.mousePosition.y;
 
-        Vector3 worldMousePos = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
+        worldMousePos = cam.ScreenToWorldPoint(new Vector3(screenMousePos.x, screenMousePos.y, cam.nearClipPlane));
         //transform.position = worldMousePos; //just follows mouse exactly
         transform.position = new Vector3(hitOverlayTilePos.x, hitOverlayTilePos.y, hitOverlayTilePos.z - 0.5f);
 
         GUILayout.BeginArea(new Rect(20, 20, 250, 120));
         GUILayout.Label("Screen pixels: " + cam.pixelWidth + ":" + cam.pixelHeight);
-        GUILayout.Label("Mouse position: " + mousePos);
+        GUILayout.Label("Mouse position: " + screenMousePos);
         GUILayout.Label("World position: " + worldMousePos.ToString("F3"));
         GUILayout.EndArea();
     }
